@@ -1,0 +1,72 @@
+.dashBoardMainContainer{
+ 
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    height: 900px;
+    font-family: 'Poppins', sans-serif;
+    /* background-color: #f9fafe !important; */
+    width: 100%;
+    margin: -1rem;
+    padding: 0 3rem;
+    color: #252525;
+}
+.dashBoardMainContainer::-webkit-scrollbar {
+  width: 0px; /* Hide scrollbar */
+  background: transparent; /* Optional: just to make it invisible */
+}   
+.summaryCardsContainer{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.summaryCardsContainer>*{
+  width: 40%;
+  min-height: 100px;
+}
+.midSection{
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ flex-direction: column;
+ margin: 2rem 1.5rem;
+}
+
+.lineChartContainer{
+  width: 100%;
+  height: 300px;
+  /* margin: 1rem 0 0 0; */
+  /* align-self: center; */
+  display: flex;
+  justify-content:center ;
+  align-items: center;
+  
+}
+.lineChartContainer>*{
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+.midSection>h4{
+  align-self: flex-start;
+}
+.totalBookingContainer{
+  margin: 0;
+}
+.totalBookingContainer>*{
+  /* margin:0 2rem; */
+  color: #25252586;
+  font-weight: 600;
+}
+
+.bottomSection{
+ 
+  margin: 2rem 1.5rem;
+  
+}

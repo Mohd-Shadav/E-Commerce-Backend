@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -22,6 +22,7 @@ IconButton,
 Tooltip,
 useMediaQuery,
 } from "@mui/material";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 // Sidebar width constants
 const SIDEBAR_WIDTH = 240;
@@ -31,9 +32,10 @@ const SIDEBAR_COLLAPSED_WIDTH = 72;
 const navLinks = [
 { label: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
 { label: "Profile", icon: <AccountCircleIcon />, path: "/profile" },
+{ label: "Products", icon: <InventoryIcon />, path: "/products" },
 { label: "Customers", icon: <GroupIcon />, path: "/customers" },
 { label: "Orders", icon: <ShoppingCartIcon />, path: "/orders" },
-{ label: "Products", icon: <InventoryIcon />, path: "/products" },
+
 { label: "Logout", icon: <LogoutIcon />, path: "/logout" },
 ];
 
@@ -69,6 +71,16 @@ const drawerVariant = isMobile ? "temporary" : "permanent";
 // Sidebar width
 const width = open ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
 
+const [menuActive,setMenuActive] = useState(null);
+ const location = useLocation();
+
+useEffect(()=>{
+   
+    const currentPath = location.pathname;
+
+    setMenuActive(currentPath);
+},[location])
+
 return (
     <Drawer
         variant={drawerVariant}
@@ -82,6 +94,8 @@ return (
                 boxShadow: "none",
                 transition: "width 0.4s cubic-bezier(.4,0,.2,1)",
                 overflow: "visible",
+                position:"relative",
+                left:0
             },
             elevation: 0,
         }}
@@ -99,6 +113,8 @@ return (
                 py: 2,
                 px: open ? 2 : 1,
                 transition: "width 0.4s cubic-bezier(.4,0,.2,1)",
+                position: "relative",
+                left: 0,
             }}
         >
             {/* Collapse/Expand Button */}
@@ -173,6 +189,7 @@ return (
             {/* Navigation Links */}
             <List sx={{ width: "100%", flex: 1 }}>
                 {navLinks.map((item) => (
+               <Link to={item.path} key={item.label} style={{ textDecoration: "none" }}>
                     <Tooltip
                         key={item.label}
                         title={!open ? item.label : ""}
@@ -185,7 +202,7 @@ return (
                                     minWidth: 0,
                                     mr: open ? 2 : "auto",
                                     justifyContent: "center",
-                                    color: "#222",
+                                    color:item.label=="Logout" ? "#d32f2f" : menuActive === item.path ? "#1976d2" : "#222",
                                     transition: "margin 0.4s cubic-bezier(.4,0,.2,1)",
                                 }}
                             >
@@ -196,12 +213,12 @@ return (
                                     primary={item.label}
                                     primaryTypographyProps={{
                                         fontWeight: 500,
-                                        sx: { color: "#222" },
+                                        sx: {  color:item.label=="Logout" ? "#d32f2f" : menuActive === item.path ? "#1976d2" : "#222",},
                                     }}
                                 />
                             )}
                         </NavItem>
-                    </Tooltip>
+                    </Tooltip></Link>
                 ))}
             </List>
         </GlassBox>
