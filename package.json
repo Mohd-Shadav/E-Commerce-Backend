@@ -16,10 +16,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "concurrently \"nodemon index.js\" \"cd Frontend && npm run dev\""
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "concurrently": "^9.2.0",
     "config": "^4.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

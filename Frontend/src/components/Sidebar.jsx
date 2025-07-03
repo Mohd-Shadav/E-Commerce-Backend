@@ -22,7 +22,8 @@ IconButton,
 Tooltip,
 useMediaQuery,
 } from "@mui/material";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 // Sidebar width constants
 const SIDEBAR_WIDTH = 240;
@@ -36,7 +37,7 @@ const navLinks = [
 { label: "Customers", icon: <GroupIcon />, path: "/customers" },
 { label: "Orders", icon: <ShoppingCartIcon />, path: "/orders" },
 
-{ label: "Logout", icon: <LogoutIcon />, path: "/logout" },
+{ label: "Logout", icon: <LogoutIcon />, path: "logout" },
 ];
 
 // Glassmorphic styled Box
@@ -64,6 +65,7 @@ transition: "transform 0.2s cubic-bezier(.4,0,.2,1), box-shadow 0.2s cubic-bezie
 const Sidebar = () => {
 const [open, setOpen] = useState(true);
 const isMobile = useMediaQuery("(max-width:900px)");
+const navigate = useNavigate();
 
 // Responsive drawer variant
 const drawerVariant = isMobile ? "temporary" : "permanent";
@@ -73,6 +75,19 @@ const width = open ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
 
 const [menuActive,setMenuActive] = useState(null);
  const location = useLocation();
+
+ const handleLogout = async(e)=>{
+    let data = await axios.post("http://localhost:3000/api/admin/logout",{},{
+        withCredentials:true
+    })
+    console.log(data);
+    if(data)
+    {
+        navigate('/');
+    }
+   
+
+ }
 
 useEffect(()=>{
    
@@ -188,38 +203,70 @@ return (
 
             {/* Navigation Links */}
             <List sx={{ width: "100%", flex: 1 }}>
-                {navLinks.map((item) => (
-               <Link to={item.path} key={item.label} style={{ textDecoration: "none" }}>
-                    <Tooltip
-                        key={item.label}
-                        title={!open ? item.label : ""}
-                        placement="right"
-                        arrow
-                    >
-                        <NavItem button sx={{ px: open ? 2 : 1 }}>
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 2 : "auto",
-                                    justifyContent: "center",
-                                    color:item.label=="Logout" ? "#d32f2f" : menuActive === item.path ? "#1976d2" : "#222",
-                                    transition: "margin 0.4s cubic-bezier(.4,0,.2,1)",
-                                }}
-                            >
-                                {item.icon}
-                            </ListItemIcon>
-                            {open && (
-                                <ListItemText
-                                    primary={item.label}
-                                    primaryTypographyProps={{
-                                        fontWeight: 500,
-                                        sx: {  color:item.label=="Logout" ? "#d32f2f" : menuActive === item.path ? "#1976d2" : "#222",},
-                                    }}
-                                />
-                            )}
-                        </NavItem>
-                    </Tooltip></Link>
-                ))}
+             {navLinks.map((item) => {
+  const isLogout = item.path === "logout";
+
+  return isLogout ? (
+    <div
+      key={item.label}
+      onClick={handleLogout}
+      style={{ textDecoration: "none", cursor: "pointer" }}
+    >
+      <Tooltip title={!open ? item.label : ""} placement="right" arrow>
+        <NavItem button sx={{ px: open ? 2 : 1 }}>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 2 : "auto",
+              justifyContent: "center",
+              color: "#d32f2f",
+            }}
+          >
+            {item.icon}
+          </ListItemIcon>
+          {open && (
+            <ListItemText
+              primary={item.label}
+              primaryTypographyProps={{
+                fontWeight: 500,
+                sx: { color: "#d32f2f" },
+              }}
+            />
+          )}
+        </NavItem>
+      </Tooltip>
+    </div>
+  ) : (
+    <Link to={item.path} key={item.label} style={{ textDecoration: "none" }}>
+      <Tooltip title={!open ? item.label : ""} placement="right" arrow>
+        <NavItem button sx={{ px: open ? 2 : 1 }}>
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 2 : "auto",
+              justifyContent: "center",
+              color: menuActive === item.path ? "#1976d2" : "#222",
+            }}
+          >
+            {item.icon}
+          </ListItemIcon>
+          {open && (
+            <ListItemText
+              primary={item.label}
+              primaryTypographyProps={{
+                fontWeight: 500,
+                sx: {
+                  color: menuActive === item.path ? "#1976d2" : "#222",
+                },
+              }}
+            />
+          )}
+        </NavItem>
+      </Tooltip>
+    </Link>
+  );
+})}
+
             </List>
         </GlassBox>
     </Drawer>

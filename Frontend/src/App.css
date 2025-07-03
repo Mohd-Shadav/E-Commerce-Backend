@@ -10,6 +10,14 @@
 
 }
 
+.auth-container-admin{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image:  linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("https://img.freepik.com/free-vector/ecommerce-web-store-hand-drawn-illustration_107791-10966.jpg?semt=ais_hybrid&w=740");
+}
+
 .top-content-container {
   display: flex;
   flex-direction: column;
