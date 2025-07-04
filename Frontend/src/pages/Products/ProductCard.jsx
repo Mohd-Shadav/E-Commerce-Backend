@@ -18,7 +18,7 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const ProductCard = ({ product, onView, onEdit, onDelete }) => {
+const ProductCard = ({ product, onView, onEdit, onDelete,isDark }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -50,7 +50,9 @@ const ProductCard = ({ product, onView, onEdit, onDelete }) => {
         elevation={6}
         sx={{
           borderRadius: 3,
-          boxShadow:
+          background:isDark?"#252525":"#fff",
+          color:isDark?"#fff":"#252525",
+          boxShadow:isDark?"0 12px 20px rgba(107, 107, 107, 0.1), 0 6px 6px rgba(83, 82, 82, 0.1)":
             "0 12px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1)",
           transition: "transform 0.3s ease",
           "&:hover": {
@@ -61,7 +63,7 @@ const ProductCard = ({ product, onView, onEdit, onDelete }) => {
         <CardMedia
           component="img"
           height="200"
-          image={product.image || "https://via.placeholder.com/400x200"}
+          image={product.images?.image1}
           alt={product.name}
           sx={{ objectFit: "cover" }}
         />
@@ -69,14 +71,14 @@ const ProductCard = ({ product, onView, onEdit, onDelete }) => {
           <Typography variant="h6" gutterBottom>
             {product.name}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            ID: {product.id}
+          <Typography variant="body2"  color={isDark?"#fff":"text.secondary"}>
+            ID: {product._id}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Category: {product.category}
+          <Typography variant="body2"  color={isDark?"#fff":"text.secondary"}>
+            Category: {product.category?.categoryName}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Price: ${product.price}
+          <Typography variant="body2"  color={isDark?"#fff":"text.secondary"}>
+            Price: ${product.discountprice}
           </Typography>
           <Typography
             variant="body2"
@@ -103,7 +105,7 @@ const ProductCard = ({ product, onView, onEdit, onDelete }) => {
                 variant="outlined"
                 color="error"
                 size="small"
-                onClick={() => onDelete(product.id)}
+                onClick={() => onDelete(product._id)}
               >
                 Delete
               </Button>
@@ -117,13 +119,13 @@ const ProductCard = ({ product, onView, onEdit, onDelete }) => {
         <DialogTitle>{product.name} - Details</DialogTitle>
         <DialogContent>
           <img
-            src={product.image || "https://via.placeholder.com/400x200"}
+            src={product.images?.image1|| "https://via.placeholder.com/400x200"}
             alt={product.name}
             style={{ width: "100%", borderRadius: 8, marginBottom: 16 }}
           />
-          <Typography gutterBottom>ID: {product.id}</Typography>
-          <Typography gutterBottom>Category: {product.category}</Typography>
-          <Typography gutterBottom>Price: ${product.price}</Typography>
+          <Typography gutterBottom>ID: {product._id}</Typography>
+          <Typography gutterBottom>Category: {product.category?.categoryName}</Typography>
+          <Typography gutterBottom>Price: ${product.discountprice}</Typography>
           <Typography gutterBottom>Status: {product.status}</Typography>
           <Typography gutterBottom>Description: {product.description}</Typography>
         </DialogContent>

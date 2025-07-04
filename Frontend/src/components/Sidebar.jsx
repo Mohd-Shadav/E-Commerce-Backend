@@ -21,9 +21,13 @@ Typography,
 IconButton,
 Tooltip,
 useMediaQuery,
+Divider,
 } from "@mui/material";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link,useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { login, logout } from "../store/slice";
+
 
 // Sidebar width constants
 const SIDEBAR_WIDTH = 240;
@@ -43,10 +47,11 @@ const navLinks = [
 // Glassmorphic styled Box
 const GlassBox = styled(Box)(({ theme }) => ({
 background: "rgba(255,255,255,0.12)",
+
 backdropFilter: "blur(14px)",
 border: "1px solid rgba(255,255,255,0.18)",
 boxShadow: "0 8px 32px 0 rgba(31,38,135,0.18)",
-borderRadius: "24px",
+borderRadius: "0px",
 transition: "box-shadow 0.3s cubic-bezier(.4,0,.2,1), background 0.3s cubic-bezier(.4,0,.2,1)",
 }));
 
@@ -62,10 +67,13 @@ transition: "transform 0.2s cubic-bezier(.4,0,.2,1), box-shadow 0.2s cubic-bezie
 },
 }));
 
-const Sidebar = () => {
+const Sidebar = ({isDark}) => {
 const [open, setOpen] = useState(true);
 const isMobile = useMediaQuery("(max-width:900px)");
+const dispatch = useDispatch();
 const navigate = useNavigate();
+
+
 
 // Responsive drawer variant
 const drawerVariant = isMobile ? "temporary" : "permanent";
@@ -73,17 +81,24 @@ const drawerVariant = isMobile ? "temporary" : "permanent";
 // Sidebar width
 const width = open ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
 
-const [menuActive,setMenuActive] = useState(null);
+const [menuActive,setMenuActive] = useState("/dashboard");
  const location = useLocation();
+
 
  const handleLogout = async(e)=>{
     let data = await axios.post("http://localhost:3000/api/admin/logout",{},{
         withCredentials:true
     })
-    console.log(data);
-    if(data)
+    
+    if(data.status == 200)
     {
-        navigate('/');
+      dispatch(logout());
+      navigate("/")
+     
+      
+    }
+    else{
+      dispatch(login());
     }
    
 
@@ -110,7 +125,8 @@ return (
                 transition: "width 0.4s cubic-bezier(.4,0,.2,1)",
                 overflow: "visible",
                 position:"relative",
-                left:0
+                left:0,
+               
             },
             elevation: 0,
         }}
@@ -146,7 +162,7 @@ return (
                         size="large"
                         sx={{
                             color: "#222",
-                            background: "rgba(255,255,255,0.22)",
+                            background:isDark?"#fff":"rgba(255,255,255,0.22)",
                             boxShadow: open
                                 ? "0 2px 8px 0 rgba(31,38,135,0.10)"
                                 : "0 1px 4px 0 rgba(31,38,135,0.08)",
@@ -191,7 +207,7 @@ return (
                         variant="subtitle1"
                         fontWeight={600}
                         sx={{
-                            color: "#222",
+                            color: isDark?"#fff":"#222",
                             whiteSpace: "nowrap",
                             transition: "opacity 0.4s cubic-bezier(.4,0,.2,1)",
                         }}
@@ -200,6 +216,12 @@ return (
                     </Typography>
                 )}
             </Box>
+
+ <Divider           sx={{
+    width: '100%',
+    borderColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+    my: 2, // optional margin
+  }}/>
 
             {/* Navigation Links */}
             <List sx={{ width: "100%", flex: 1 }}>
@@ -210,7 +232,7 @@ return (
     <div
       key={item.label}
       onClick={handleLogout}
-      style={{ textDecoration: "none", cursor: "pointer" }}
+      style={{ textDecoration: "none", cursor: "pointer"}}
     >
       <Tooltip title={!open ? item.label : ""} placement="right" arrow>
         <NavItem button sx={{ px: open ? 2 : 1 }}>
@@ -245,7 +267,7 @@ return (
               minWidth: 0,
               mr: open ? 2 : "auto",
               justifyContent: "center",
-              color: menuActive === item.path ? "#1976d2" : "#222",
+              color: menuActive === item.path ? "#1976d2" : isDark?"#fff":"#222",
             }}
           >
             {item.icon}
@@ -256,7 +278,7 @@ return (
               primaryTypographyProps={{
                 fontWeight: 500,
                 sx: {
-                  color: menuActive === item.path ? "#1976d2" : "#222",
+                  color: menuActive === item.path ? "#1976d2" : isDark?"#fff":"#222",
                 },
               }}
             />

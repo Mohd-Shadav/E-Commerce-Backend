@@ -1,5 +1,5 @@
 // Product.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ProductCard from "./ProductCard";
+import axios from "axios";
 
 const sampleProducts = [
   {
@@ -133,18 +134,19 @@ const sampleProducts = [
 const categories = ["All", "Electronics", "Footwear", "Fashion"];
 const stockStatus = ["All", "In-Stock", "Out-Stock"];
 
-const Product = () => {
-  const [products, setProducts] = useState(sampleProducts);
+const Product = ({isDark}) => {
+  const [products, setProducts] = useState([]);
   const [openAddModal, setOpenAddModal] = useState(false);
   const [filterCategory, setFilterCategory] = useState("All");
   const [filterStock, setFilterStock] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  
 
   const handleAddProduct = () => setOpenAddModal(true);
   const handleCloseAddModal = () => setOpenAddModal(false);
 
   const handleDelete = (id) => {
-    setProducts(products.filter((p) => p.id !== id));
+    setProducts(products.filter((p) => p._id !== id));
   };
 
   const filteredProducts = products.filter((product) => {
@@ -158,12 +160,32 @@ const Product = () => {
     return matchesCategory && matchesStock && matchesSearch;
   });
 
+
+
+  useEffect(()=>{
+    const getProducts =async ()=>{
+
+      const result = await axios.get("http://localhost:3000/api/products/get-products")
+
+      console.log(result.data);
+   setProducts(result.data);
+    }
+
+    getProducts();
+
+  },[searchQuery])
+
   return (
     <Box
       p={3}
       sx={{
-        height: "800px",
+        height: "100vh",
         overflowY: "scroll",
+ scrollbarWidth: "none", // Firefox
+    msOverflowStyle: "none", // IE/Edge
+    '&::-webkit-scrollbar': {
+      display: 'none', // Chrome, Safari, Edge
+    },
       
         width: "100% !important",
         marginTop: "-13px",
@@ -181,14 +203,34 @@ const Product = () => {
             variant="outlined"
             size="small"
             fullWidth
+                        InputLabelProps={{
+    style: {
+      color: isDark ? '#ccc' : '#555',  // Label text color
+    },
+  }}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon />
+                  <SearchIcon style={{color:isDark?"#fff":"#252525"}}/>
                 </InputAdornment>
-              ),
+              ),sx: {
+      color: isDark ? '#ccc' : '#555', // Label color
+    },
+  }}
+  sx={{
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: isDark ? '#666' : '#ccc', // Border color
+      },
+      '&:hover fieldset': {
+        borderColor: isDark ? '#888' : '#888',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: isDark ? '#fff' : '#000',
+      },
+    },
             }}
           />
         </Grid>
@@ -200,10 +242,36 @@ const Product = () => {
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
             size="small"
-            sx={{ width: "150px" }}
+             InputLabelProps={{
+    style: {
+      color: isDark ? '#ccc' : '#555',  // Label text color
+    },
+  }}
+            sx={{ width: "150px" ,
+            
+      color: isDark ? '#fff' : '#222', // selected value text
+      '.MuiSvgIcon-root': {
+        color: isDark ? '#fff' : '#222', // dropdown arrow icon
+      },
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: isDark ? '#777' : '#ccc', // border
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: isDark ? '#aaa' : '#555',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: isDark ? '#fff' : '#000',
+      },
+    }}
+
+     InputProps={{
+    style: {
+      color: isDark ? '#ccc' : '#555',  // Label text color
+    },
+  }}
           >
             {categories.map((cat) => (
-              <MenuItem key={cat} value={cat}>
+              <MenuItem key={cat} value={cat}  >
                 {cat}
               </MenuItem>
             ))}
@@ -217,7 +285,32 @@ const Product = () => {
             value={filterStock}
             onChange={(e) => setFilterStock(e.target.value)}
             size="small"
-            sx={{ width: "150px" }}
+                        InputLabelProps={{
+    style: {
+      color: isDark ? '#ccc' : '#555',  // Label text color
+    },
+  }}
+             InputProps={{
+    style: {
+      color: isDark ? '#ccc' : '#555',  // Label text color
+    },
+  }}
+            sx={{ width: "150px" ,
+            
+      color: isDark ? '#fff' : '#222', // selected value text
+      '.MuiSvgIcon-root': {
+        color: isDark ? '#fff' : '#222', // dropdown arrow icon
+      },
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: isDark ? '#777' : '#ccc', // border
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: isDark ? '#aaa' : '#555',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: isDark ? '#fff' : '#000',
+      },
+    }}
           >
             {stockStatus.map((status) => (
               <MenuItem key={status} value={status}>
@@ -242,7 +335,7 @@ const Product = () => {
       <Grid container spacing={3}>
         {filteredProducts.map((product) => (
           <Grid item xs={12} sm={6} md={4} key={product.id}>
-            <ProductCard product={product} onDelete={handleDelete} />
+            <ProductCard product={product} onDelete={handleDelete} isDark={isDark}/>
           </Grid>
         ))}
       </Grid>

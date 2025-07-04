@@ -76,7 +76,7 @@ const statusOptions = ["All", "Delivered", "Pending", "Cancelled"];
 
 const PAGE_SIZE = 5;
 
-const Order = () => {
+const Order = ({isDark}) => {
 const [search, setSearch] = useState("");
 const [status, setStatus] = useState("All");
 const [page, setPage] = useState(1);
@@ -130,7 +130,10 @@ return (
             </Grid>
             <Grid item xs={12} md={3}>
                 <FormControl fullWidth size="small">
-                    <InputLabel>Status</InputLabel>
+                    <InputLabel  sx={{
+      color: isDark ? "#fff" : "#333",
+      fontWeight: 600,
+    }}>Status</InputLabel>
                     <Select
                         value={status}
                         label="Status"
@@ -138,7 +141,18 @@ return (
                             setStatus(e.target.value);
                             setPage(1);
                         }}
-                        sx={{ bgcolor: "white", borderRadius: 1 ,minWidth: 120}}
+                  sx={{
+      bgcolor: isDark ? "#333" : "#fff",
+      color: isDark ? "#fff" : "#000",
+      borderRadius: 1,
+      minWidth: 120,
+       '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: isDark ? '#777' : '#ccc',
+  },
+  '& .MuiSvgIcon-root': {
+    color: isDark ? '#fff' : '#000',
+  }
+    }}
                     >
                         {statusOptions.map((option) => (
                             <MenuItem key={option} value={option}>
@@ -164,53 +178,77 @@ return (
         </Grid>
 
         {/* Orders Table */}
-        <Paper elevation={0} sx={{ borderRadius: 2, p: 2, mb: 3 }}>
-            <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Order ID</TableCell>
-                            <TableCell>Customer Name</TableCell>
-                            <TableCell>Date</TableCell>
-                            <TableCell>Amount</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell align="right">Actions</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {paginatedOrders.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={6} align="center">
-                                    No orders found.
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            paginatedOrders.map((order) => (
-                                <TableRow key={order.id}>
-                                    <TableCell>{order.id}</TableCell>
-                                    <TableCell>{order.customer}</TableCell>
-                                    <TableCell>
-                                        {new Date(order.date).toLocaleDateString()}
-                                    </TableCell>
-                                    <TableCell>{order.amount}</TableCell>
-                                    <TableCell>
-                                        <Chip
-                                            label={order.status}
-                                            color={orderStatusColors[order.status]}
-                                            size="small"
-                                            sx={{ fontWeight: 500 }}
-                                        />
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <IconButton>
-                                            <MoreVertIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
+        <Paper elevation={0} sx={{ borderRadius: 2, p: 2, mb: 3 , backgroundColor: isDark ? "#1e1e1e" : "#fff",
+    color: isDark ? "#fff" : "#252525",
+  }}>
+            <TableContainer sx={{
+    backgroundColor: isDark ? "#1e1e1e" : "#fff",
+    color: isDark ? "#fff" : "#252525",
+    borderRadius: 2,
+  }}>
+               <Table sx={{ backgroundColor: isDark ? "#1e1e1e" : "#fff" }}>
+  <TableHead>
+    <TableRow sx={{ backgroundColor: isDark ? "#2c2c2c" : "#f5f5f5" }}>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Order ID</TableCell>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Customer Name</TableCell>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Date</TableCell>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Amount</TableCell>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Status</TableCell>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }} align="right">Actions</TableCell>
+    </TableRow>
+  </TableHead>
+
+  <TableBody>
+    {paginatedOrders.length === 0 ? (
+      <TableRow>
+        <TableCell colSpan={6} align="center" sx={{ color: isDark ? "#aaa" : "#666" }}>
+          No orders found.
+        </TableCell>
+      </TableRow>
+    ) : (
+      paginatedOrders.map((order) => (
+        <TableRow
+          key={order.id}
+          sx={{
+            "&:hover": {
+              backgroundColor: isDark ? "#333" : "#f9f9f9",
+            },
+          }}
+        >
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.id}</TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.customer}</TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
+            {new Date(order.date).toLocaleDateString()}
+          </TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.amount}</TableCell>
+          <TableCell>
+            <Chip
+              label={order.status}
+              color={orderStatusColors[order.status]}
+              size="small"
+              sx={{
+                fontWeight: 500,
+                color: "#fff",
+                backgroundColor:
+                  order.status === "Delivered"
+                    ? "#4caf50"
+                    : order.status === "Pending"
+                    ? "#ff9800"
+                    : "#f44336",
+              }}
+            />
+          </TableCell>
+          <TableCell align="right">
+            <IconButton>
+              <MoreVertIcon sx={{ color: isDark ? "#fff" : "#252525" }} />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      ))
+    )}
+  </TableBody>
+</Table>
+
             </TableContainer>
             {/* Pagination */}
             <Stack
@@ -225,6 +263,15 @@ return (
                     onChange={(_, value) => setPage(value)}
                     color="primary"
                     shape="rounded"
+                     sx={{
+      '& .MuiPaginationItem-root': {
+        color: isDark ? '#fff' : '#000', // page number color
+      },
+      '& .MuiPaginationItem-icon': {
+        color: isDark ? '#fff' : '#000', // arrow icon color
+      },
+    }}
+                    
                 />
             </Stack>
         </Paper>

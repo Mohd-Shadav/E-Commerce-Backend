@@ -2,12 +2,15 @@ import React from "react";
 import styles from "./Signin.module.css";
 import { useState } from "react";
 import axios from 'axios'
-import { useNavigate } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+import {login,logout} from "/src/store/slice.js"
+import { useNavigate } from "react-router-dom";
 function Signin() {
   const [credentials,setCredentials] = useState({email:"",password:""});
-  const [isLoggedin,setIsLoggedIn] = useState(false)
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const handleChange = (e)=>{
     const {name,value} = e.target;
@@ -30,20 +33,20 @@ function Signin() {
       }
     })
 
-   if(data)
+    
+
+   if(data.status == 200)
    {
     
-    setIsLoggedIn(true)
+    dispatch(login());
+    navigate('/dashboard');
    
   }
-  else{
-     setIsLoggedIn(false)
 
-   }
     
    }catch(err)
    {
-     setIsLoggedIn(false)
+ alert("Wrong Credentials...")
     console.log("frontend Error",err)
    }
 

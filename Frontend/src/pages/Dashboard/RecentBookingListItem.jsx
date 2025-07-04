@@ -44,9 +44,9 @@ const statusMap = {
     },
 };
 
-const RecentBookingListItem = () => (
-    <div className="booking-table">
-        <div className="booking-table-header">
+const RecentBookingListItem = ({isDark}) => (
+    <div className="booking-table" style={{background:isDark ? "#252525":"#fff"}}>
+        <div className="booking-table-header" style={{color:isDark?"#fff":"#252525",background:isDark ? "#252525":"#fff"}}>
             <div>Product</div>
             <div>Date</div>
             <div>Price</div>
@@ -55,15 +55,15 @@ const RecentBookingListItem = () => (
         {bookings.map((b) => {
             const status = statusMap[b.status] || {};
             return (
-                <div className="booking-table-row" key={b.id}>
-                    <div data-label="Service Name">{b.service}</div>
+                <div className="booking-table-row" key={b.id} style={{color:isDark?"#fff":"#252525",background:isDark ? "#252525":"#fff"}}  >
+                    <div data-label="Service Name" style={{color:isDark?"#fff":"#252525"}}>{b.service}</div>
                     <div data-label="Date">{b.date}</div>
                     <div data-label="Price">{b.price}</div>
                     <div data-label="Status">
                         <span
                             className="status-tag"
                             style={{
-                                color: status.color,
+                                color:"#252525",
                                 background: status.bg,
                                 borderColor: status.color,
                             }}

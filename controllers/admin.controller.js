@@ -9,9 +9,9 @@ const bcrypt = require('bcrypt');
 
 
 
-exports.getAdmin = async(req,res)=>{
+exports.getAdmin = async (req,res)=>{
 
-   res.send("Logged in Successfully...1234")
+  res.status(200).send("logged in successfully...")
 
 
 }
@@ -19,20 +19,20 @@ exports.getAdmin = async(req,res)=>{
 exports.createAdmin = async(req,res)=>{
     const {name,email,password}= req.body;
     const isAdminalready = await AdminSchema.findOne({email})
-     console.log(isAdminalready);
+ 
     if(isAdminalready)
     {
-        res.send("You Are Already An Admin...")
+        res.status(401).send("You Are Already An Admin...")
     }
     else{
 
         bcrypt.genSalt(10,(err,salt)=>{
             if(err){
-                res.send("Internal Server error..")
+                res.status(501).send("Internal Server error..")
             }else{
                 bcrypt.hash(password,salt,async (err,hash)=>{
                     if(err){
-                        res.send("something went wrong..")
+                        res.status(401).send("something went wrong..")
                     }
                     else{
                         const admin = await AdminSchema.create({email,name,password:hash});
@@ -40,7 +40,7 @@ exports.createAdmin = async(req,res)=>{
                        let token = jwt.sign({email},secret);
 
                        res.cookie("Token",token);
-                       res.send('done');
+                       res.status(200).send('done');
                     }
                 })
             }
@@ -64,11 +64,16 @@ exports.tokenVerify = async (req, res) => {
     }
 
     const data = jwt.verify(token, secret); // ✅ verify token
-    console.log("Verified user:", data);
+    console.log(data);
 
-    return res.status(200).json({ success: true, message: "Token verified", user: data });
+    const adminData = await AdminSchema.findOne({email:data})
+    console.log(adminData)
+  
+
+
+    return res.status(200).json({ success: true, message: "Token verified", adminData });
   } catch (err) {
-    console.error("Verification error:", err.message);
+
     return res.status(403).json({ success: false, message: "Invalid or expired token" });
   }
 };

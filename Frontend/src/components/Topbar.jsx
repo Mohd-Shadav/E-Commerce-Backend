@@ -1,10 +1,25 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { dark, light } from "../store/slice";
 
 const TopBar = () => {
-  const [dark, setDark] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+  const dispatch = useDispatch();
+
+  const handleTheme = ()=>{
+   
+    if(isDark){
+      dispatch(light());
+     
+    }else{
+      dispatch(dark());
+    
+    }
+   setIsDark(!isDark);
+  }
 
   return (
-    <header className={`topbar${dark ? " dark" : ""}`}>
+    <header className={`topbar${isDark ? " dark" : ""}`} style={{background:isDark?"":"#F5F5F5"}}>
       <div className="topbar__logo">ShopAdmin</div>
       <div className="topbar__actions">
         <button className="topbar__icon" aria-label="Notifications">
@@ -25,10 +40,10 @@ const TopBar = () => {
         <button
           className="topbar__icon"
           aria-label="Toggle theme"
-          onClick={() => setDark((d) => !d)}
+          onClick={handleTheme}
         >
           {/* Theme Toggle Icon (Sun/Moon) */}
-          {dark ? (
+          {isDark ? (
             // Sun icon
             <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="5"/>

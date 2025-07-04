@@ -1,13 +1,13 @@
 .dashBoardMainContainer{
  
-    overflow-y: scroll !important;
-    overflow-x: hidden !important;
-    height: 900px;
-    font-family: 'Poppins', sans-serif;
-    /* background-color: #f9fafe !important; */
-    width: 100%;
-    margin: -1rem;
-    padding: 0 3rem;
+  overflow-x: hidden !important;
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  /* background-color: #f9fafe !important; */
+  width: 100%;
+  margin: -1rem;
+  padding: 0 3rem;
+  overflow-y: auto!important;
     color: #252525;
 }
 .dashBoardMainContainer::-webkit-scrollbar {

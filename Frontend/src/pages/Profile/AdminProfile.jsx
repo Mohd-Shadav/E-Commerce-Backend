@@ -1,6 +1,6 @@
 // src/pages/Admin/AdminProfile.jsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   TextField,
@@ -10,111 +10,118 @@ import {
   Paper,
   Grid,
 } from '@mui/material';
-import { col } from 'framer-motion/client';
+import axios from 'axios';
 
-const initialAdminData = {
-  name: 'Mohd Shadav',
-  email: 'admin@example.com',
-  phone: '+91 98765-43210',
-  role: 'Super Admin',
-  location: 'Lucknow, India',
-  avatar: '/images/admin/admin.jpg',
-};
-
-const AdminProfile = () => {
-  const [adminData, setAdminData] = useState(initialAdminData);
+const AdminProfile = ({ isDark }) => {
+  const [adminData, setAdminData] = useState({});
   const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState(adminData);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setAdminData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
   const handleSave = () => {
-    setAdminData(formData);
+    // You can send updated data to backend here
     setEditMode(false);
   };
 
   const handleEditToggle = () => {
-    setFormData(adminData);
     setEditMode(true);
   };
 
+  useEffect(() => {
+    const getAdmin = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/admin/verify-admin", {
+          withCredentials: true,
+        });
+        setAdminData(res.data.adminData);
+      } catch (error) {
+        console.error("Failed to fetch admin data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getAdmin();
+  }, []);
+
+  if (isLoading) {
+    return <Typography>Loading admin profile...</Typography>;
+  }
+
   return (
-    <Box sx={{ width: '100%', px: 2 ,boxShadow:'none'}}>
-      <Paper  sx={{ p: 4, borderRadius: 4,boxShadow:'none' }}>
-        <Box display="flex"  justifyContent="center" mb={3}>
+    <Box sx={{ width: '100%', px: 2, boxShadow: 'none' }}>
+      <Paper
+        sx={{
+          p: 4,
+          borderRadius: 4,
+          boxShadow: 'none',
+          color: isDark ? "#fff" : "#252525",
+          background: isDark ? "#252525" : "#fff"
+        }}
+      >
+        <Box display="flex" justifyContent="center" mb={3}>
           <Avatar
-            src={adminData.avatar}
-            alt={adminData.name}
+            src={adminData.image || ""}
+            alt={adminData.name || ""}
             sx={{ width: 100, height: 100 }}
           />
         </Box>
 
         <Typography variant="h5" align="center" fontWeight="bold" gutterBottom>
-          Admin Profile
+          {adminData.name || "Admin"}
         </Typography>
 
         <Grid container direction="column" spacing={2} mt={2}>
-          <Grid item xs={12}>
-            <TextField
-              label="Full Name"
-              name="name"
-              fullWidth
-              value={formData.name}
-              onChange={handleChange}
-              InputProps={{ readOnly: !editMode }}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Email"
-              name="email"
-              type="email"
-              fullWidth
-              value={formData.email}
-              onChange={handleChange}
-              InputProps={{ readOnly: !editMode }}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Phone"
-              name="phone"
-              fullWidth
-              value={formData.phone}
-              onChange={handleChange}
-              InputProps={{ readOnly: !editMode }}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Role"
-              name="role"
-              fullWidth
-              value={formData.role}
-              onChange={handleChange}
-              InputProps={{ readOnly: !editMode }}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              label="Location"
-              name="location"
-              fullWidth
-              value={formData.location}
-              onChange={handleChange}
-              InputProps={{ readOnly: !editMode }}
-            />
-          </Grid>
+          {[
+            { label: "Full Name", name: "name" },
+            { label: "Email", name: "email", type: "email" },
+            { label: "Phone", name: "phone" },
+            { label: "Role", name: "role" },
+            { label: "Location", name: "location" },
+          ].map((field) => (
+            <Grid item xs={12} key={field.name}>
+              <TextField
+                label={field.label}
+                name={field.name}
+                type={field.type || "text"}
+                fullWidth
+                value={adminData[field.name] || ""}
+                onChange={handleChange}
+                InputProps={{
+                  readOnly: !editMode,
+                  sx: {
+                    color: isDark ? '#fff' : '#222',
+                  },
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                  sx: {
+                    color: isDark ? '#ccc' : '#555',
+                  },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': {
+                      borderColor: isDark ? '#666' : '#ccc',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: isDark ? '#888' : '#888',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: isDark ? '#fff' : '#000',
+                    },
+                  },
+                }}
+              />
+            </Grid>
+          ))}
         </Grid>
 
         <Box mt={4} display="flex" justifyContent="center" gap={2}>

@@ -11,22 +11,26 @@ exports.isAdmin = async (req,res,next)=>{
 
     let {email,password} = req.body;
 
+   
+
     let Admin = await AdminSchema.findOne({email});
 
     if(!Admin)
     {
-         res.send("Wrong Credentials...")
+         res.status(401).send("Wrong Credentials...")
     }
     else{
         bcrypt.compare(password,Admin.password,(err,result)=>{
             if(result){
+               
 
                 let token = jwt.sign(email,secret);
                 res.cookie("Token",token);
-                     next();
+                
+                next();
             }
             else{
-                res.send("wrong credentials....")
+                res.status(401).send("wrong credentials....")
             }
 
 
