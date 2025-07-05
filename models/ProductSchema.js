@@ -13,15 +13,16 @@ const ProductSchema = new mongoose.Schema({
         default:'In-Stock'
     },
     
-    physicalSpecs:{
-        size:{
-        type:[String],
-        enum:['S','M',"L","XL","XXL"],
-        default:'M'
+ physicalSpecs: {
+    size: {
+      S: { type: Number, default: 0 },
+      M: { type: Number, default: 0 },
+      L: { type: Number, default: 0 },
+      XL: { type: Number, default: 0 },
     },
-    weight:Number,
-    volume:Number,
-    },
+    weight: { type: Number, default: 0 },
+    volume: { type: Number, default: 0 },
+  },
 
     quantity:{
         type:Number,
@@ -29,8 +30,8 @@ const ProductSchema = new mongoose.Schema({
     },
     brand: String,
     images:{
-        image1:String,
-        image2:String,
+       thumbnail:String,
+       gallery:[String]
     },
     rating:Number,
     reviews:{

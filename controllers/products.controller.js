@@ -11,9 +11,12 @@ exports.getProducts =async (req,res)=>{
 
 exports.createProducts = async (req,res)=>{
    try{
-    let product = await ProductSchema.create(req.body);
+    let thumbnail = req.files?.thumbnail?.[0]?.buffer || null;
+    const gallery = req.files?.gallery.map(item=>item.buffer) || [];
+    let product = await ProductSchema.create({...req.body,thumbnail,gallery});
 
-    res.send(product);
+
+    res.status(200).send(product);
 
    }catch(err){
     console.log("nor created ::",err);

@@ -21,115 +21,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import ProductCard from "./ProductCard";
 import axios from "axios";
 
-const sampleProducts = [
-  {
-    id: "P001",
-    name: "Wireless Headphones",
-    category: "Electronics",
-    price: 99,
-    status: "In-Stock",
-    description: "High quality wireless headphones",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=facearea&w=400&q=80",
-  },
-  {
-    id: "P001",
-    name: "Wireless Headphones",
-    category: "Electronics",
-    price: 99,
-    status: "In-Stock",
-    description: "High quality wireless headphones",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=facearea&w=400&q=80",
-  },
-  ,
-  {
-    id: "P001",
-    name: "Wireless Headphones",
-    category: "Electronics",
-    price: 99,
-    status: "In-Stock",
-    description: "High quality wireless headphones",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=facearea&w=400&q=80",
-  },
-  ,
-  {
-    id: "P001",
-    name: "Wireless Headphones",
-    category: "Electronics",
-    price: 99,
-    status: "In-Stock",
-    description: "High quality wireless headphones",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=facearea&w=400&q=80",
-  },
-  ,
-  {
-    id: "P001",
-    name: "Wireless Headphones",
-    category: "Electronics",
-    price: 99,
-    status: "In-Stock",
-    description: "High quality wireless headphones",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=facearea&w=400&q=80",
-  },
-  ,
-  {
-    id: "P001",
-    name: "Wireless Headphones",
-    category: "Electronics",
-    price: 99,
-    status: "In-Stock",
-    description: "High quality wireless headphones",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=facearea&w=400&q=80",
-  },
-  ,
-  {
-    id: "P001",
-    name: "Wireless Headphones",
-    category: "Electronics",
-    price: 99,
-    status: "In-Stock",
-    description: "High quality wireless headphones",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=facearea&w=400&q=80",
-  },
-  ,
-  {
-    id: "P001",
-    name: "Wireless Headphones",
-    category: "Electronics",
-    price: 99,
-    status: "In-Stock",
-    description: "High quality wireless headphones",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=facearea&w=400&q=80",
-  },
-  ,
-  {
-    id: "P001",
-    name: "Wireless Headphones",
-    category: "Electronics",
-    price: 99,
-    status: "In-Stock",
-    description: "High quality wireless headphones",
-    image:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=facearea&w=400&q=80",
-  },
-  {
-    id: "P002",
-    name: "Sneakers",
-    category: "Footwear",
-    price: 59,
-    status: "Out-Stock",
-    description: "Comfortable sneakers for daily wear",
-    image:
-      "https://images.unsplash.com/photo-1606813903298-2151a1b1849c?auto=format&fit=facearea&w=400&q=80",
-  },
-];
 
 const categories = ["All", "Electronics", "Footwear", "Fashion"];
 const stockStatus = ["All", "In-Stock", "Out-Stock"];
@@ -140,6 +31,36 @@ const Product = ({isDark}) => {
   const [filterCategory, setFilterCategory] = useState("All");
   const [filterStock, setFilterStock] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+const [formData, setFormData] = useState({
+  name: "",
+  description: "",
+  originalprice: 0,
+  discountprice: 0,
+  status: "In-Stock", // default from schema
+
+  physicalSpecs: {
+    size: {
+      S:0,
+      M:0,
+      L:0,
+      XL:0
+    }, // default is ['M'], because it's an array
+    weight: 1,
+    volume: 1,
+  },
+
+  quantity: 1, // default from schema
+  brand: "",
+  images: {
+    thumbnail: "", // URL or base64 string
+    gallery: [],   // array of image strings
+  },
+  rating: 0,
+  reviews: [],
+  isFeatured: false,
+  category: "", // category ID will be stored here
+});
   
 
   const handleAddProduct = () => setOpenAddModal(true);
@@ -160,6 +81,72 @@ const Product = ({isDark}) => {
     return matchesCategory && matchesStock && matchesSearch;
   });
 
+
+ const handleFormChange = (e) => {
+  const { name, value, type, files } = e.target;
+
+  // Handle image upload (thumbnail)
+  if (name === "thumbnail") {
+    const file = files[0];
+    setFormData((prev) => ({
+      ...prev,
+      images: {
+        ...prev.images,
+        thumbnail: file,
+      },
+    }));
+    return;
+  }
+
+  // Handle image gallery
+  if (name === "gallery") {
+    const fileList = Array.from(files);
+    setFormData((prev) => ({
+      ...prev,
+      images: {
+        ...prev.images,
+        gallery: fileList,
+      },
+    }));
+    return;
+  }
+
+  // Handle physicalSpecs.size
+  if (["small", "medium", "large", "extraLarge"].includes(name)) {
+    setFormData((prev) => ({
+      ...prev,
+      physicalSpecs: {
+        ...prev.physicalSpecs,
+        size: [...prev.physicalSpecs.size.filter((s) => s !== name[0].toUpperCase()), value > 0 ? name[0].toUpperCase() : null].filter(Boolean),
+      },
+    }));
+    return;
+  }
+
+  // Handle physicalSpecs.volume or weight
+  if (["volume", "weight"].includes(name)) {
+    setFormData((prev) => ({
+      ...prev,
+      physicalSpecs: {
+        ...prev.physicalSpecs,
+        [name]: value,
+      },
+    }));
+    return;
+  }
+
+  // Handle all other flat fields
+  setFormData((prev) => ({
+    ...prev,
+    [name]: type === "number" ? Number(value) : value,
+  }));
+};
+
+
+  const handleSubmitProduct = (e)=>{
+    e.preventDefault();
+    console.log(formData);
+  }
 
 
   useEffect(()=>{
@@ -340,6 +327,15 @@ const Product = ({isDark}) => {
         ))}
       </Grid>
 
+
+
+      {/* /////////////////FORM DATA//////////////////////////////// */}
+
+
+
+
+
+
       {/* Add Product Modal */}
       <Dialog
         open={openAddModal}
@@ -351,19 +347,21 @@ const Product = ({isDark}) => {
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
         >
-          <TextField label="Product Name" name="name" fullWidth />
+          <TextField label="Product Name" name="name" fullWidth onChange={handleFormChange} />
           <div style={{ display: "flex", gap: "16px" }}>
             <TextField
               label="Discount Price"
               name="discountPrice"
               fullWidth
               type="number"
+              onChange={handleFormChange}
             />
             <TextField
               label="Original Price"
               name="originalPrice"
               fullWidth
               type="number"
+              onChange={handleFormChange}
             />
           </div>
           {/*             
@@ -380,6 +378,7 @@ const Product = ({isDark}) => {
               name="category"
               select
               sx={{ width: "50%" }}
+              onChange={handleFormChange}
             >
               <MenuItem value="all">All</MenuItem>
               <MenuItem value="fashion">Fashion</MenuItem>
@@ -394,6 +393,7 @@ const Product = ({isDark}) => {
               name="status"
               select
               sx={{ width: "50%" }}
+              onChange={handleFormChange}
             >
               <MenuItem value="In-Stock">In-Stock</MenuItem>
               <MenuItem value="Out-Stock">Out-Stock</MenuItem>
@@ -405,6 +405,7 @@ const Product = ({isDark}) => {
             multiline
             rows={3}
             fullWidth
+            onChange={handleFormChange}
           />
           <div style={{ display: "flex", gap: "16px" }}>
             <TextField
@@ -412,6 +413,7 @@ const Product = ({isDark}) => {
               name="quantity"
               type="number"
               sx={{ width: "50%" }}
+              onChange={handleFormChange}
             />
 
             <TextField
@@ -419,18 +421,19 @@ const Product = ({isDark}) => {
               name="brand"
               type="text"
               sx={{ width: "50%" }}
+              onChange={handleFormChange}
             />
           </div>
 
           <div style={{ display: "flex", gap: "16px" }}>
             {/* <label htmlFor="" name="Sizes">Sizes</label> */}
 
-            <TextField label="Small" name="small" type="number" />
+            <TextField label="Small" name="small" type="number" onChange={handleFormChange}/>
 
-            <TextField label="Medium" name="medium" type="number" />
+            <TextField label="Medium" name="medium" type="number" onChange={handleFormChange}/>
 
-            <TextField label="Large" name="large" type="number" />
-            <TextField label="XL" name="extraLarge" type="number" />
+            <TextField label="Large" name="large" type="number" onChange={handleFormChange}/>
+            <TextField label="XL" name="extraLarge" type="number" onChange={handleFormChange}/>
           </div>
 
           <div style={{ display: "flex", gap: "16px" }}>
@@ -439,6 +442,7 @@ const Product = ({isDark}) => {
               name="volume"
               type="number"
               sx={{ width: "50%" }}
+              onChange={handleFormChange}
             />
 
             <TextField
@@ -446,6 +450,7 @@ const Product = ({isDark}) => {
               name="weight"
               type="number"
               sx={{ width: "50%" }}
+              onChange={handleFormChange}
             />
           </div>
           <div style={{ display: "flex", gap: "16px" }}>
@@ -455,6 +460,7 @@ const Product = ({isDark}) => {
               type="number"
               inputProps={{ min: 0, max: 5, step: 0.1 }}
               sx={{ width: "50%" }}
+              onChange={handleFormChange}
             />
 
             <TextField
@@ -462,6 +468,7 @@ const Product = ({isDark}) => {
               name="isFeatured"
               sx={{ width: "50%" }}
               select
+              onChange={handleFormChange}
             >
               <MenuItem value="true">true</MenuItem>
               <MenuItem value="false">false</MenuItem>
@@ -476,7 +483,7 @@ const Product = ({isDark}) => {
               sx={{ mt: 2 }}
             >
               Upload Thumbnail Image
-              <input type="file" hidden accept="image/*" />
+              <input type="file" hidden accept="image/*" name="thumbnail" onChange={handleFormChange} />
             </Button>
             <Button
               variant="outlined"
@@ -485,13 +492,13 @@ const Product = ({isDark}) => {
               sx={{ mt: 2 }}
             >
               Upload Product Images
-              <input type="file" hidden accept="image/*" multiple />
+              <input type="file" hidden accept="image/*" multiple name="gallery" onChange={handleFormChange} />
             </Button>
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseAddModal}>Cancel</Button>
-          <Button variant="contained">Add</Button>
+          <Button variant="contained" onClick={handleSubmitProduct}>Add</Button>
         </DialogActions>
       </Dialog>
     </Box>
