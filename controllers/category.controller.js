@@ -7,7 +7,12 @@ exports.createCategory = async (req,res)=>{
 }
 
 exports.getCategories = async(req,res)=>{
-    let category = await CategorySchema.find();
+try{
+        let category = await CategorySchema.find();
     
-    res.json(category);
+    res.status(200).send(category);
+}catch(err){
+    console.log(err)
 }
+}
+

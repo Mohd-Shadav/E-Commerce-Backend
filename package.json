@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
     "concurrently": "^9.2.0",
     "config": "^4.0.0",
     "cookie-parser": "^1.4.7",

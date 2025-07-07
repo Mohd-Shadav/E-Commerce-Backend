@@ -20,9 +20,10 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import ProductCard from "./ProductCard";
 import axios from "axios";
+import { header } from "framer-motion/client";
 
 
-const categories = ["All", "Electronics", "Footwear", "Fashion"];
+
 const stockStatus = ["All", "In-Stock", "Out-Stock"];
 
 const Product = ({isDark}) => {
@@ -31,6 +32,7 @@ const Product = ({isDark}) => {
   const [filterCategory, setFilterCategory] = useState("All");
   const [filterStock, setFilterStock] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [categories, setCategories] = useState([]);
 
 const [formData, setFormData] = useState({
   name: "",
@@ -66,87 +68,156 @@ const [formData, setFormData] = useState({
   const handleAddProduct = () => setOpenAddModal(true);
   const handleCloseAddModal = () => setOpenAddModal(false);
 
-  const handleDelete = (id) => {
-    setProducts(products.filter((p) => p._id !== id));
+  const handleDelete = async (id) => {
+
+    console.log(id)
+     
+    try{
+
+      let res = await axios.delete("http://localhost:3000/api/products/delete-product",{
+        data:{_id:id},
+        withCredentials:true,
+        headers:{
+          "Content-type":"application/json"
+        }
+      })
+
+      alert("Product Deleted Successfully");
+
+    }catch(err)
+    {
+      alert("Something Went Wrong");
+
+    }
+    
   };
+const filteredProducts = products.filter((product) => {
+  const matchesCategory =
+    filterCategory === "All" || product.category?._id === filterCategory;
+  const matchesStock =
+    filterStock === "All" || product.status === filterStock;
+  const matchesSearch = product.name
+    .toLowerCase()
+    .includes(searchQuery.toLowerCase());
 
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory =
-      filterCategory === "All" || product.category === filterCategory;
-    const matchesStock =
-      filterStock === "All" || product.status === filterStock;
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesStock && matchesSearch;
-  });
+  return matchesCategory && matchesStock && matchesSearch;
+});
 
-
- const handleFormChange = (e) => {
+const handleFormChange = (e) => {
   const { name, value, type, files } = e.target;
 
-  // Handle image upload (thumbnail)
-  if (name === "thumbnail") {
-    const file = files[0];
-    setFormData((prev) => ({
-      ...prev,
-      images: {
-        ...prev.images,
-        thumbnail: file,
-      },
-    }));
+  // Handle file upload
+  if (type === "file") {
+    if (name === "thumbnail") {
+      const file = files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setFormData((prevData) => ({
+            ...prevData,
+            images: {
+              ...prevData.images,
+              thumbnail: reader.result,
+            },
+          }));
+        };
+        reader.readAsDataURL(file);
+      }
+    } else if (name === "gallery") {
+      const fileList = Array.from(files);
+      const readers = fileList.map(
+        (file) =>
+          new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(file);
+          })
+      );
+      Promise.all(readers).then((images) => {
+        setFormData((prevData) => ({
+          ...prevData,
+          images: {
+            ...prevData.images,
+            gallery: images,
+          },
+        }));
+      });
+    }
     return;
   }
 
-  // Handle image gallery
-  if (name === "gallery") {
-    const fileList = Array.from(files);
-    setFormData((prev) => ({
-      ...prev,
-      images: {
-        ...prev.images,
-        gallery: fileList,
-      },
-    }));
-    return;
-  }
-
-  // Handle physicalSpecs.size
-  if (["small", "medium", "large", "extraLarge"].includes(name)) {
-    setFormData((prev) => ({
-      ...prev,
+  // Handle nested physicalSpecs.size
+  if (["S", "M", "L", "XL"].includes(name)) {
+    setFormData((prevData) => ({
+      ...prevData,
       physicalSpecs: {
-        ...prev.physicalSpecs,
-        size: [...prev.physicalSpecs.size.filter((s) => s !== name[0].toUpperCase()), value > 0 ? name[0].toUpperCase() : null].filter(Boolean),
+        ...prevData.physicalSpecs,
+        size: {
+          ...prevData.physicalSpecs.size,
+         [name]: type === "number"
+  ? value === "" ? "" : Number(value)
+  : value
+        },
       },
     }));
     return;
   }
 
-  // Handle physicalSpecs.volume or weight
-  if (["volume", "weight"].includes(name)) {
-    setFormData((prev) => ({
-      ...prev,
+  // Handle physicalSpecs.weight or volume
+  if (name === "weight" || name === "volume") {
+    setFormData((prevData) => ({
+      ...prevData,
       physicalSpecs: {
-        ...prev.physicalSpecs,
-        [name]: value,
+        ...prevData.physicalSpecs,
+        [name]: type === "number"
+  ? value === "" ? "" : Number(value)
+  : value
       },
     }));
     return;
   }
 
-  // Handle all other flat fields
-  setFormData((prev) => ({
-    ...prev,
-    [name]: type === "number" ? Number(value) : value,
+  // Handle isFeatured as boolean
+  if (name === "isFeatured") {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value === "true", // convert from string to boolean
+    }));
+    return;
+  }
+
+  // Default (top-level fields)
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]: type === "number"
+  ? value === "" ? "" : Number(value)
+  : value
   }));
 };
 
-
-  const handleSubmitProduct = (e)=>{
+  const handleSubmitProduct =async (e)=>{
     e.preventDefault();
-    console.log(formData);
+   
+
+   try{
+     const data = await axios.post("http://localhost:3000/api/products/create-product",formData,{
+      withCredentials:true,
+      headers:{
+        "Content-Type":"application/json"
+      }
+    }
+  )
+
+
+    alert("Product Added Successfully...");
+    setOpenAddModal(false)
+    
+
+   }catch(err){
+      alert("Something went wrong...")
   }
+  }
+  
 
 
   useEffect(()=>{
@@ -154,13 +225,25 @@ const [formData, setFormData] = useState({
 
       const result = await axios.get("http://localhost:3000/api/products/get-products")
 
-      console.log(result.data);
+  
    setProducts(result.data);
     }
 
+     const fetchCategories = async () => {
+    try {
+      const res = await axios.get("http://localhost:3000/api/category/getCategories");
+      setCategories(res.data);
+     
+    } catch (err) {
+      console.error("Error fetching categories", err);
+    }
+  };
+
+  fetchCategories();
+
     getProducts();
 
-  },[searchQuery])
+  },[searchQuery,formData,products])
 
   return (
     <Box
@@ -257,11 +340,12 @@ const [formData, setFormData] = useState({
     },
   }}
           >
-            {categories.map((cat) => (
-              <MenuItem key={cat} value={cat}  >
-                {cat}
-              </MenuItem>
-            ))}
+          <MenuItem value="All">All</MenuItem>
+  {categories.map((cat) => (
+    <MenuItem key={cat._id} value={cat._id}>
+      {cat.categoryName}
+    </MenuItem>
+  ))}
           </TextField>
         </Grid>
 
@@ -347,21 +431,23 @@ const [formData, setFormData] = useState({
         <DialogContent
           sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
         >
-          <TextField label="Product Name" name="name" fullWidth onChange={handleFormChange} />
+          <TextField label="Product Name" name="name" fullWidth onChange={handleFormChange} value={formData.name}  margin="normal"  />
           <div style={{ display: "flex", gap: "16px" }}>
             <TextField
               label="Discount Price"
-              name="discountPrice"
+              name="discountprice"
               fullWidth
               type="number"
               onChange={handleFormChange}
+               value={formData.discountprice === 0 ? "" : formData.discountprice}
             />
             <TextField
               label="Original Price"
-              name="originalPrice"
+              name="originalprice"
               fullWidth
               type="number"
               onChange={handleFormChange}
+              value={formData.originalprice === 0 ? "" : formData.originalprice}
             />
           </div>
           {/*             
@@ -373,20 +459,20 @@ const [formData, setFormData] = useState({
                /> */}
 
           <div style={{ display: "flex", gap: "16px" }}>
-            <TextField
-              label="Category"
-              name="category"
-              select
-              sx={{ width: "50%" }}
-              onChange={handleFormChange}
-            >
-              <MenuItem value="all">All</MenuItem>
-              <MenuItem value="fashion">Fashion</MenuItem>
-              <MenuItem value="electronics">Electronics</MenuItem>
-              <MenuItem value="footwear">Footwear</MenuItem>
-              <MenuItem value="accessories">Accessories</MenuItem>
-              <MenuItem value="books">Books</MenuItem>
-            </TextField>
+       <TextField
+  label="Category"
+  name="category"
+  select
+  fullWidth
+  onChange={handleFormChange}
+  value={formData.category}
+>
+  {categories.map((cat) => (
+    <MenuItem key={cat._id} value={cat._id}>
+      {cat.categoryName}
+    </MenuItem>
+  ))}
+</TextField>
 
             <TextField
               label="Status"
@@ -394,6 +480,7 @@ const [formData, setFormData] = useState({
               select
               sx={{ width: "50%" }}
               onChange={handleFormChange}
+              value={formData.status}
             >
               <MenuItem value="In-Stock">In-Stock</MenuItem>
               <MenuItem value="Out-Stock">Out-Stock</MenuItem>
@@ -406,6 +493,7 @@ const [formData, setFormData] = useState({
             rows={3}
             fullWidth
             onChange={handleFormChange}
+            value={formData.description}
           />
           <div style={{ display: "flex", gap: "16px" }}>
             <TextField
@@ -414,6 +502,7 @@ const [formData, setFormData] = useState({
               type="number"
               sx={{ width: "50%" }}
               onChange={handleFormChange}
+              value={formData.quantity === 0 ? "" : formData.quantity}
             />
 
             <TextField
@@ -422,18 +511,19 @@ const [formData, setFormData] = useState({
               type="text"
               sx={{ width: "50%" }}
               onChange={handleFormChange}
+              value={formData.brand}
             />
           </div>
 
           <div style={{ display: "flex", gap: "16px" }}>
             {/* <label htmlFor="" name="Sizes">Sizes</label> */}
 
-            <TextField label="Small" name="small" type="number" onChange={handleFormChange}/>
+            <TextField label="Small" name="S" type="number" onChange={handleFormChange} value={formData.physicalSpecs.size.S}/>
 
-            <TextField label="Medium" name="medium" type="number" onChange={handleFormChange}/>
+            <TextField label="Medium" name="M" type="number" onChange={handleFormChange} value={formData.physicalSpecs.size.M}/>
 
-            <TextField label="Large" name="large" type="number" onChange={handleFormChange}/>
-            <TextField label="XL" name="extraLarge" type="number" onChange={handleFormChange}/>
+            <TextField label="Large" name="L" type="number" onChange={handleFormChange} value={formData.physicalSpecs.size.L}/>
+            <TextField label="XL" name="XL" type="number" onChange={handleFormChange} value={formData.physicalSpecs.size.XL}/>
           </div>
 
           <div style={{ display: "flex", gap: "16px" }}>
@@ -443,6 +533,7 @@ const [formData, setFormData] = useState({
               type="number"
               sx={{ width: "50%" }}
               onChange={handleFormChange}
+              value={formData.physicalSpecs.volume}
             />
 
             <TextField
@@ -451,6 +542,7 @@ const [formData, setFormData] = useState({
               type="number"
               sx={{ width: "50%" }}
               onChange={handleFormChange}
+              value={formData.physicalSpecs.weight}
             />
           </div>
           <div style={{ display: "flex", gap: "16px" }}>
@@ -461,6 +553,7 @@ const [formData, setFormData] = useState({
               inputProps={{ min: 0, max: 5, step: 0.1 }}
               sx={{ width: "50%" }}
               onChange={handleFormChange}
+              value={formData.rating}
             />
 
             <TextField
@@ -469,6 +562,7 @@ const [formData, setFormData] = useState({
               sx={{ width: "50%" }}
               select
               onChange={handleFormChange}
+              value={formData.isFeatured}
             >
               <MenuItem value="true">true</MenuItem>
               <MenuItem value="false">false</MenuItem>

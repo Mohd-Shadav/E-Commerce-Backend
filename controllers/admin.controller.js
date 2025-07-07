@@ -64,10 +64,10 @@ exports.tokenVerify = async (req, res) => {
     }
 
     const data = jwt.verify(token, secret); // ✅ verify token
-    console.log(data);
+
 
     const adminData = await AdminSchema.findOne({email:data})
-    console.log(adminData)
+    
   
 
 
