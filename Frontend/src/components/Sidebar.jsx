@@ -8,6 +8,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import MenuIcon from "@mui/icons-material/Menu";
+import CategoryIcon from '@mui/icons-material/Category';
 import { styled } from "@mui/system";
 import {
 Box,
@@ -38,6 +39,7 @@ const navLinks = [
 { label: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
 { label: "Profile", icon: <AccountCircleIcon />, path: "/profile" },
 { label: "Products", icon: <InventoryIcon />, path: "/products" },
+{ label: "Categories", icon: <CategoryIcon />, path: "/categories" },
 { label: "Customers", icon: <GroupIcon />, path: "/customers" },
 { label: "Orders", icon: <ShoppingCartIcon />, path: "/orders" },
 

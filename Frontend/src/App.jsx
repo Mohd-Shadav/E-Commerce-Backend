@@ -16,6 +16,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from './store/slice';
+import Categories from './pages/Category/Categories';
 
 
 function App() {
@@ -91,6 +92,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard isDark={theme}/>} />
           <Route path="/orders" element={<Order isDark={theme}/>} />
           <Route path="/products" element={<Product isDark={theme}/>} />
+           <Route path="/categories" element={<Categories isDark={theme}/>} />
           <Route path="/customers" element={<Customer isDark={theme}/>} />
           <Route path='/profile' element={<AdminProfile isDark={theme}/>} />
           <Route path="*" element={<Dashboard/>}/>
