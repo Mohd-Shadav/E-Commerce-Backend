@@ -163,7 +163,8 @@ useEffect(()=>{
 
      const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/category/getCategories");
+      const res = await axios.get("http://localhost:3000/api/category/get-categories");
+    
       setCategories(res.data);
      
     } catch (err) {
@@ -210,7 +211,7 @@ useEffect(()=>{
             ID: {product._id}
           </Typography>
           <Typography variant="body2"  color={isDark?"#fff":"text.secondary"}>
-            Category: {product.category?.categoryName}
+            Category: {product.category?.categoryname}
           </Typography>
           <Typography variant="body2"  color={isDark?"#fff":"text.secondary"}>
             Price: <strong> ₹ {product.discountprice}</strong>  <del style={{color:"rgba(201, 47, 9, 0.89)"}}>₹ {product.originalprice}</del>
@@ -275,7 +276,7 @@ useEffect(()=>{
       </Swiper>
          
           <Typography gutterBottom><strong>ID:</strong> {product._id}</Typography>
-          <Typography gutterBottom><strong>Category: </strong>{product.category?.categoryName}</Typography>
+          <Typography gutterBottom><strong>Category: </strong>{product.category?.categoryname}</Typography>
           <Typography gutterBottom><strong>Discounted Price:</strong> ₹ {product.discountprice}</Typography>
               <Typography gutterBottom><strong>Original Price:</strong> ₹ {product.originalprice}</Typography>
           <Typography gutterBottom><strong>Status:</strong> {product.status}</Typography>

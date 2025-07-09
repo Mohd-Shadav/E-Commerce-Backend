@@ -231,19 +231,22 @@ const handleFormChange = (e) => {
 
      const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/category/getCategories");
+      const res = await axios.get("http://localhost:3000/api/category/get-categories");
       setCategories(res.data);
+     
      
     } catch (err) {
       console.error("Error fetching categories", err);
     }
   };
 
+
+
   fetchCategories();
 
     getProducts();
 
-  },[searchQuery,formData,products])
+  },[searchQuery,formData])
 
   return (
     <Box
@@ -343,7 +346,7 @@ const handleFormChange = (e) => {
           <MenuItem value="All">All</MenuItem>
   {categories.map((cat) => (
     <MenuItem key={cat._id} value={cat._id}>
-      {cat.categoryName}
+      {cat.categoryname}
     </MenuItem>
   ))}
           </TextField>

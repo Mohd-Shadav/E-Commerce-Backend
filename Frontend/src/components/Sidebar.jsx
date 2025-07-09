@@ -26,7 +26,7 @@ Divider,
 } from "@mui/material";
 import { Link,useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../store/slice";
 
 
@@ -74,6 +74,8 @@ const [open, setOpen] = useState(true);
 const isMobile = useMediaQuery("(max-width:900px)");
 const dispatch = useDispatch();
 const navigate = useNavigate();
+const [admin,setAdmin] = useState({name:"",pic:""})
+const {adminName,adminPic} = useSelector((state)=>state.getAdminData);
 
 
 
@@ -86,6 +88,8 @@ const width = open ? SIDEBAR_WIDTH : SIDEBAR_COLLAPSED_WIDTH;
 const [menuActive,setMenuActive] = useState("/dashboard");
  const location = useLocation();
 
+
+ 
 
  const handleLogout = async(e)=>{
     let data = await axios.post("http://localhost:3000/api/admin/logout",{},{
@@ -111,6 +115,13 @@ useEffect(()=>{
     const currentPath = location.pathname;
 
     setMenuActive(currentPath);
+    
+    setAdmin({
+      name:adminName,
+      pic:adminPic
+    })
+    
+   
 },[location])
 
 return (
@@ -193,7 +204,7 @@ return (
                 }}
             >
                 <Avatar
-                    src="https://i.pravatar.cc/100?img=12"
+                    src={admin.pic}
                     alt="Admin"
                     sx={{
                         width: 48,
@@ -214,7 +225,7 @@ return (
                             transition: "opacity 0.4s cubic-bezier(.4,0,.2,1)",
                         }}
                     >
-                        Admin Name
+                     {admin.name}
                     </Typography>
                 )}
             </Box>

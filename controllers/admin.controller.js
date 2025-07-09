@@ -78,6 +78,17 @@ exports.tokenVerify = async (req, res) => {
   }
 };
 
+exports.updateAdmin = async(req,res)=>{
+  try{
+    let {_id} = req.body;
+     let data = await AdminSchema.findByIdAndUpdate({_id},req.body,{new:true})
+     res.status(200).json(data);
+
+  }catch(err)
+  {
+    console.log(err)
+  }
+}
 
 exports.logoutAdmin = (req,res)=>{
 

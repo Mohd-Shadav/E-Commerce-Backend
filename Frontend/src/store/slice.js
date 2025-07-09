@@ -37,7 +37,27 @@ const themeSlice = createSlice({
     }
 })
 
+
+const adminDataSlice = createSlice({
+    name:"admin",
+    initialState:{
+        adminName:"",
+        adminPic:""
+    },
+    reducers:{
+        getAdminData : (state,action)=>{
+           
+            state.adminName = action.payload.adminName;
+            state.adminPic = action.payload.adminPic;
+            
+        }
+      
+
+    }
+})
 export const {login,logout} = isLoggedInSlice.actions;
-export const {light,dark} = themeSlice.actions
+export const {light,dark} = themeSlice.actions;
+export const {getAdminData} = adminDataSlice.actions;
 export const loggedInSlice =  isLoggedInSlice.reducer;
 export const themeMode = themeSlice.reducer;
+export const adminDataGetter = adminDataSlice.reducer;

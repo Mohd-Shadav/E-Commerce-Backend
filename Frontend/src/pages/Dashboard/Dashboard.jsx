@@ -3,11 +3,17 @@ import styles from './Dashboard.module.css'
 import SummaryCard from './Summarycard';
 import { LineChart } from '@mui/x-charts';
 import RecentBookingListItem from './RecentBookingListItem';
+import { useSelector } from 'react-redux';
 
 function Dashboard({isDark}) {
      const [totalBookings,setTotalBookings] = useState(0)
      const year = new Date().getFullYear();
      const [hoverShowOrder,setHoverShowOrder] = useState(false)
+     const [admin,setAdmin] = useState({
+      name:"",
+      pic:""
+     })
+     const {adminName,adminPic} = useSelector((state)=>state.getAdminData);
 
 
         const summaryCardList = [{heading:"Pending Orders",value:5},{heading:"Total Orders",value:"300"},{heading:"Total Sales",value:'₹ 18000'},{heading:"Total Users",value:"5673"}]
@@ -20,15 +26,20 @@ function Dashboard({isDark}) {
     
     useEffect(()=>{
       const totalb = bookingsData.bookings.reduce((acc,val)=>acc+val,0);
+
+      setAdmin({
+        name:adminName,
+        pic:adminPic
+      })
     
       setTotalBookings(totalb)
-    })
+    },[])
     
   return (
     <aside className={styles.dashBoardMainContainer} style={{color:isDark?"#fff":"#222"}}>
 
         <div className={styles.headingContainer}>
-        <h2 style={{marginBottom:"0rem"}}>Welcome <strong>Mohd. Shadav</strong></h2>
+        <h2 style={{marginBottom:"0rem"}}>Welcome <strong>{admin.name}</strong></h2>
      <div style={{display:"flex",alignItems:"center",gap:"1rem" ,marginBottom:"1rem"}}>
            <p>You have <span>46</span> pending orders.</p>
         <span onMouseEnter={() => setHoverShowOrder(true)} onMouseLeave={() => setHoverShowOrder(false)} style={{border:isDark?"0.2px solid rgba(255, 255, 255, 0.62)":"0.2px solid rgba(47, 47, 218, 0.62)",textAlign:"center",padding:"0.1rem 0.4rem",color:"gray",borderRadius:"20px",color:isDark?"#fff":"#252525",cursor:"pointer",background: hoverShowOrder ? "rgba(46, 46, 46, 0.07)" : "transparent"}}>Show</span>

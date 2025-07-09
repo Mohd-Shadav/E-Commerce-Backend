@@ -110,7 +110,8 @@ const [filterData,setFilterData] = useState([])
         let res = await axios.get(
           "http://localhost:3000/api/category/get-categories"
         );
- 
+        
+     
 
         setCategories(res.data);
         setFilterData(res.data)
@@ -167,10 +168,14 @@ const [filterData,setFilterData] = useState([])
   }}
           >
             <MenuItem value="All">All</MenuItem>
-            <MenuItem value="Fashion">Fashion</MenuItem>
-            <MenuItem value="Electronics">Electronics</MenuItem>
-            <MenuItem value="Footwear">Footwear</MenuItem>
-            <MenuItem value="Groceries">Groceries</MenuItem>
+            {categories.map((item)=>{
+              return (
+                 <MenuItem value={item.categoryname}>{item.categoryname}</MenuItem>
+              )
+            })
+
+            }
+           
           </TextField>
 
           <Button

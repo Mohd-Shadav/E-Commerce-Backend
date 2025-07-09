@@ -11,11 +11,14 @@ import {
   Grid,
 } from '@mui/material';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { getAdminData } from '../../store/slice';
 
 const AdminProfile = ({ isDark }) => {
   const [adminData, setAdminData] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,9 +28,27 @@ const AdminProfile = ({ isDark }) => {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // You can send updated data to backend here
-    setEditMode(false);
+     try{
+        let data = await axios.put("http://localhost:3000/api/admin/update-admin",adminData,{
+          withCredentials:true,
+          headers:{
+            "Content-Type" : "application/json"
+          }
+        })
+
+        setEditMode(false);
+        alert("Admin Updated Successfully...")
+
+     }catch(error)
+     {
+      alert("Something went wrong...")
+
+     }
+
+
+  
   };
 
   const handleEditToggle = () => {
@@ -41,6 +62,8 @@ const AdminProfile = ({ isDark }) => {
           withCredentials: true,
         });
         setAdminData(res.data.adminData);
+       
+
       } catch (error) {
         console.error("Failed to fetch admin data:", error);
       } finally {
@@ -49,7 +72,7 @@ const AdminProfile = ({ isDark }) => {
     };
 
     getAdmin();
-  }, []);
+  }, [setEditMode]);
 
   if (isLoading) {
     return <Typography>Loading admin profile...</Typography>;

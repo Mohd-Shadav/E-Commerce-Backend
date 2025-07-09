@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { dark, light } from "../store/slice";
 
 const TopBar = () => {
   const [isDark, setIsDark] = useState(false);
+  const [admin,setAdmin] = useState({name:"",pic:""})
   const dispatch = useDispatch();
+  const {adminName,adminPic}= useSelector((state)=>state.getAdminData)
 
   const handleTheme = ()=>{
    
@@ -17,6 +19,20 @@ const TopBar = () => {
     }
    setIsDark(!isDark);
   }
+
+
+
+  useEffect(()=>{
+
+   
+
+   setAdmin({
+    name:adminName,
+    pic:adminPic
+   })
+
+  },[])
+
 
   return (
     <header className={`topbar${isDark ? " dark" : ""}`} style={{background:isDark?"":"#F5F5F5"}}>
@@ -31,11 +47,12 @@ const TopBar = () => {
         <div className="topbar__profile">
           {/* Profile image or name */}
           <img
-            src="https://i.pravatar.cc/32?img=3"
-            alt="Admin"
+            src={admin.pic}
+            
+            alt={admin.name}
             className="topbar__avatar"
           />
-          <span className="topbar__name">Admin</span>
+          <span className="topbar__name" >{admin.name}</span>
         </div>
         <button
           className="topbar__icon"
@@ -122,10 +139,14 @@ const TopBar = () => {
           height: 32px;
           border-radius: 50%;
           object-fit: cover;
+          object-position:center;
+        
+          
         }
         .topbar__name {
           font-size: 1rem;
-          font-weight: 500;
+          font-weight: 600;
+          font-family:inter,arial
         }
         @media (max-width: 600px) {
           .topbar {

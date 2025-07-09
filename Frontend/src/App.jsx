@@ -15,7 +15,7 @@ import Signin from './pages/Auth/Signin';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, logout } from './store/slice';
+import { getAdminData, login, logout } from './store/slice';
 import Categories from './pages/Category/Categories';
 
 
@@ -34,7 +34,14 @@ function App() {
         });
 
         if (res.status === 200) {
+          dispatch(getAdminData({
+          adminName:res.data.adminData.name,
+          adminPic:res.data.adminData.image
+        }))
           dispatch(login());
+       
+
+       
         } else {
           dispatch(logout());
         }
@@ -47,7 +54,7 @@ function App() {
 
 
   useEffect(()=>{
- 
+    
    
     verification();
     
