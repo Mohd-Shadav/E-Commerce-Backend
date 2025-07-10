@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import React, { useState } from 'react'
 import axios from 'axios';
 
-function CategoryCard({id,name,icon,setIsDeleteItem,isDark}) {
+function CategoryCard({id,name,icon,setIsDeleteItem,isDark,onClick}) {
       const [anchorEl, setAnchorEl] = useState(null);
         const [isCategoryUpdateDialogOpen,setIsCategoryUpdateDialogOpen] = useState(false)
         const [updateForm,setUpdateForm] = useState({
@@ -110,6 +110,8 @@ function CategoryCard({id,name,icon,setIsDeleteItem,isDark}) {
     
 <Tooltip title={name} arrow>
 <Card
+
+onClick={onClick}
      
       sx={{
         width: 130,

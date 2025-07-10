@@ -21,6 +21,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ProductCard from "./ProductCard";
 import axios from "axios";
 import { header } from "framer-motion/client";
+import NoResultFound from "../NoResultFound/NoResultFound";
 
 
 
@@ -33,6 +34,7 @@ const Product = ({isDark}) => {
   const [filterStock, setFilterStock] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState([]);
+  const [callProducts,setCallProducts] = useState(false)
 
 const [formData, setFormData] = useState({
   name: "",
@@ -70,7 +72,7 @@ const [formData, setFormData] = useState({
 
   const handleDelete = async (id) => {
 
-    console.log(id)
+ 
      
     try{
 
@@ -83,6 +85,7 @@ const [formData, setFormData] = useState({
       })
 
       alert("Product Deleted Successfully");
+      setCallProducts(!callProducts);
 
     }catch(err)
     {
@@ -211,6 +214,36 @@ const handleFormChange = (e) => {
 
     alert("Product Added Successfully...");
     setOpenAddModal(false)
+    setCallProducts(!callProducts);
+    setFormData({
+  name: "",
+  description: "",
+  originalprice: 0,
+  discountprice: 0,
+  status: "In-Stock", // default from schema
+
+  physicalSpecs: {
+    size: {
+      S:0,
+      M:0,
+      L:0,
+      XL:0
+    }, // default is ['M'], because it's an array
+    weight: 1,
+    volume: 1,
+  },
+
+  quantity: 1, // default from schema
+  brand: "",
+  images: {
+    thumbnail: "", // URL or base64 string
+    gallery: [],   // array of image strings
+  },
+  rating: 0,
+  reviews: [],
+  isFeatured: false,
+  category: "", // category ID will be stored here
+})
     
 
    }catch(err){
@@ -246,7 +279,7 @@ const handleFormChange = (e) => {
 
     getProducts();
 
-  },[searchQuery,formData])
+  },[searchQuery,formData,callProducts])
 
   return (
     <Box
@@ -407,11 +440,15 @@ const handleFormChange = (e) => {
       </Grid>
 
       <Grid container spacing={3}>
-        {filteredProducts.map((product) => (
+        {filteredProducts.length>0 ? ( filteredProducts.map((product) => (
           <Grid item xs={12} sm={6} md={4} key={product.id}>
-            <ProductCard product={product} onDelete={handleDelete} isDark={isDark}/>
+            <ProductCard product={product} onDelete={handleDelete} isDark={isDark} setCallProducts={setCallProducts}/>
           </Grid>
-        ))}
+        ))) : (
+          <div style={{width:"100%"}}>
+            <NoResultFound/>
+          </div>
+        )}
       </Grid>
 
 
@@ -472,7 +509,7 @@ const handleFormChange = (e) => {
 >
   {categories.map((cat) => (
     <MenuItem key={cat._id} value={cat._id}>
-      {cat.categoryName}
+      {cat.categoryname}
     </MenuItem>
   ))}
 </TextField>
@@ -495,6 +532,7 @@ const handleFormChange = (e) => {
             multiline
             rows={3}
             fullWidth
+           
             onChange={handleFormChange}
             value={formData.description}
           />

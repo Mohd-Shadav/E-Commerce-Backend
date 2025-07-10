@@ -13,12 +13,15 @@ import React, { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import CategoryCard from "./CategoryCard";
 import axios from "axios";
+import ProductCard from "../Products/ProductCard";
 
 function Categories({isDark}) {
   const [selectData, setSelectData] = useState("All");
   const [categories, setCategories] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteItem,setIsDeleteItem] = useState(false)
+  const [productByCategory,setProductsByCategory] = useState([]);
+    const [callProducts,setCallProducts] = useState(false)
   const [categoryData, setCategoryData] = useState({
     categoryname: "",
     categoryicon: "",
@@ -103,6 +106,51 @@ const [filterData,setFilterData] = useState([])
     }
   };
 
+  const handleDelete = async (id) => {
+
+ 
+     
+    try{
+
+      let res = await axios.delete("http://localhost:3000/api/products/delete-product",{
+        data:{_id:id},
+        withCredentials:true,
+        headers:{
+          "Content-type":"application/json"
+        }
+      })
+
+      alert("Product Deleted Successfully");
+      setCallProducts(!callProducts);
+
+    }catch(err)
+    {
+      alert("Something Went Wrong");
+
+    }
+    
+  };
+
+  const sendCategory =async (name)=>{
+         console.log(name)
+
+         try{
+
+          let res = await axios.get(`http://localhost:3000/api/products/category/${encodeURIComponent(name)}`)
+
+          console.log("frontend : ",res.data);
+          setProductsByCategory(res.data);
+              
+         }catch(err)
+         {
+          alert("Semething went wrong...")
+         }
+  }
+
+
+  const resetProductByCategory = ()=>{
+    setProductsByCategory([]);
+  }
 
   useEffect(() => {
     const renderCategory = async () => {
@@ -197,11 +245,25 @@ const [filterData,setFilterData] = useState([])
             gap: "2rem",
           }}
         >
-          {filterData.map((item) => {
+          {productByCategory.length<=0 ? ( filterData.map((item) => {
             return (
-              <CategoryCard id={item._id} name={item.categoryname} icon={item.categoryicon} setIsDeleteItem={setIsDeleteItem} isDark={isDark}/>
+              <CategoryCard id={item._id} name={item.categoryname} icon={item.categoryicon} setIsDeleteItem={setIsDeleteItem} isDark={isDark} onClick={()=>sendCategory(item.categoryname)}/>
             );
-          })}
+          })):(
+            <div className="">
+              <div className="" style={{display:"flex",gap:"2rem",alignItems:"center"}}>
+                    <Button variant="contained" color="error" onClick={resetProductByCategory}>Back</Button>
+              <Typography variant="h6">Total Products in this Category : {productByCategory.length}</Typography>
+              </div>
+              <div  style={{display:"flex",gap:"2rem",flexWrap:"wrap",marginTop:"2rem"}}>
+                    { productByCategory.map((item)=>{
+                return (
+                  <ProductCard product={item} isDark={isDark} onDelete={handleDelete} setCallProducts={setCallProducts}  />
+                )
+              })}
+              </div>
+              </div>
+          )}
         </div>
 
 

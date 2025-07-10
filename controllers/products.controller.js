@@ -1,3 +1,4 @@
+const CategorySchema = require("../models/CategorySchema");
 const ProductSchema = require("../models/ProductSchema");
 
 
@@ -84,4 +85,20 @@ exports.deleteProduct = async (req,res)=>{
     }
 
 
+}
+
+
+exports.getProductsByCategory = async(req,res)=>{
+    try{
+        let {category} = req.params;
+
+        let categoryData = await CategorySchema.findOne({categoryname:category});
+        
+        let data = await ProductSchema.find({category:categoryData._id})
+
+        res.status(200).json(data);
+
+    }catch(err){
+        console.log(err)
+    }
 }

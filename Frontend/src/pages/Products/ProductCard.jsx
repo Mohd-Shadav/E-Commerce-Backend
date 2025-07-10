@@ -30,7 +30,7 @@ import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import axios from "axios";
 
-const ProductCard = ({ product, onView, onEdit, onDelete,isDark }) => {
+const ProductCard = ({ product, onDelete,isDark,setCallProducts }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [formData,setFormData] = useState({ ...product })
@@ -150,6 +150,7 @@ const handleEditProduct = async (e)=>{
 
     alert("Product Updated Successfully...")
     setOpenEdit(false);
+    setCallProducts((prev)=>!prev)
 
   }catch(err)
   {
@@ -187,6 +188,8 @@ useEffect(()=>{
         sx={{
           borderRadius: 3,
           background:isDark?"#252525":"#fff",
+          width:"300px",
+          maxWidth:"300px",
           color:isDark?"#fff":"#252525",
           boxShadow:isDark?"0 12px 20px rgba(107, 107, 107, 0.1), 0 6px 6px rgba(83, 82, 82, 0.1)":
             "0 12px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1)",
@@ -340,7 +343,7 @@ useEffect(()=>{
    >
      {categories.map((cat) => (
        <MenuItem key={cat._id} value={cat._id}>
-         {cat.categoryName}
+         {cat.categoryname}
        </MenuItem>
      ))}
    </TextField>
