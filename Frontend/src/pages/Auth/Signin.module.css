@@ -3,7 +3,10 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: linear-gradient(135deg, #D6F3FF, #FFFBD1, #FFD6D6, #FFE5CC);
+  background: linear-gradient(140deg, #D6F3FF, #FFFBD1, #FFD6D6);
+  /* background: linear-gradient(#f5f3ec,#d2cdb9,#92a378);
+  background: linear-gradient(#f8f4f0,#ddd0c8,#b0a89f); */
+
 
   padding: 30px;
   width: 450px;

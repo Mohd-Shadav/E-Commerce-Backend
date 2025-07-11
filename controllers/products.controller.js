@@ -91,6 +91,7 @@ exports.deleteProduct = async (req,res)=>{
 exports.getProductsByCategory = async(req,res)=>{
     try{
         let {category} = req.params;
+    
 
         let categoryData = await CategorySchema.findOne({categoryname:category});
         
@@ -99,6 +100,21 @@ exports.getProductsByCategory = async(req,res)=>{
         res.status(200).json(data);
 
     }catch(err){
+        console.log(err)
+    }
+}
+
+exports.getproductById = async(req,res)=>{
+    try{
+        const {productId} = req.params;
+     
+
+        let data = await ProductSchema.findOne({_id:productId}).populate('category');
+
+        res.status(200).json(data);
+
+    }catch(err)
+    {
         console.log(err)
     }
 }

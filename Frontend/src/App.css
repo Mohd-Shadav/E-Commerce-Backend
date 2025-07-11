@@ -16,6 +16,9 @@
   align-items: center;
   height: 100vh;
   background-image:  linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("https://img.freepik.com/free-vector/ecommerce-web-store-hand-drawn-illustration_107791-10966.jpg?semt=ais_hybrid&w=740");
+    /* background:linear-gradient(170deg,#0a0f0d,#2d4f4a,#8db1a4);
+    background: linear-gradient(135deg,#44291a,#a15c48,#f7d6cf);
+    background: linear-gradient(135deg,#f5f3ec,#d2cdb9,#92a378); */
 }
 
 .top-content-container {

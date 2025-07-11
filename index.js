@@ -14,9 +14,13 @@ const userRoutes = require('./Routes/user.routes');
 const adminRoutes = require('./Routes/admin.routes');
 
 // app.use(express.json());
+const allowedOrigin = [
+   "http://localhost:5173",
+   "http://localhost:5174"
+]
 
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:allowedOrigin,
     credentials:true
 }))
 app.use(cookieParser());
