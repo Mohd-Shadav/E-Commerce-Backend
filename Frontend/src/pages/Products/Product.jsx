@@ -63,6 +63,8 @@ const [formData, setFormData] = useState({
   rating: 0,
   reviews: [],
   isFeatured: false,
+  isNew:true,
+  isPopular:false,
   category: "", // category ID will be stored here
 });
   
@@ -604,6 +606,31 @@ const handleFormChange = (e) => {
               select
               onChange={handleFormChange}
               value={formData.isFeatured}
+            >
+              <MenuItem value="true">true</MenuItem>
+              <MenuItem value="false">false</MenuItem>
+            </TextField>
+          </div>
+
+          <div style={{ display: "flex", gap: "16px" }}>
+                <TextField
+              label="IsNew"
+              name="isNew"
+              sx={{ width: "50%" }}
+              select
+              onChange={handleFormChange}
+              value={formData.isNew}
+            >
+              <MenuItem value="true">true</MenuItem>
+              <MenuItem value="false">false</MenuItem>
+            </TextField>
+                <TextField
+              label="IsPopular"
+              name="isPopular"
+              sx={{ width: "50%" }}
+              select
+              onChange={handleFormChange}
+              value={formData.isPopular}
             >
               <MenuItem value="true">true</MenuItem>
               <MenuItem value="false">false</MenuItem>

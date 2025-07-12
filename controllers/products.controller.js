@@ -118,3 +118,29 @@ exports.getproductById = async(req,res)=>{
         console.log(err)
     }
 }
+
+exports.getNewProducts = async (req,res)=>{
+
+    try{
+
+        let data = await ProductSchema.find({isNew:true}).populate('category');
+
+        res.status(200).json(data)
+    }catch(err)
+    {
+        console.log(err);
+    }
+}
+
+exports.getFeaturedProducts = async (req,res)=>{
+
+    try{
+
+        let data = await ProductSchema.find({isFeatured:true}).populate('category');
+
+        res.status(200).json(data)
+    }catch(err)
+    {
+        console.log(err);
+    }
+}

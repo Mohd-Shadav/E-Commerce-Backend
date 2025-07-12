@@ -38,10 +38,16 @@ const ProductSchema = new mongoose.Schema({
         type:[String]
     },
     isFeatured:Boolean,
+    isNew:Boolean,
+    isPopular:Boolean,
     category:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Category',
         required:true
+    },
+    date:{
+        type:Date,
+        default:Date.now
     }
     
 
