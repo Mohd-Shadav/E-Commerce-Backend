@@ -95,7 +95,7 @@ exports.getProductsByCategory = async(req,res)=>{
 
         let categoryData = await CategorySchema.findOne({categoryname:category});
         
-        let data = await ProductSchema.find({category:categoryData._id})
+        let data = await ProductSchema.find({category:categoryData._id}).populate('category');
 
         res.status(200).json(data);
 
@@ -142,5 +142,22 @@ exports.getFeaturedProducts = async (req,res)=>{
     }catch(err)
     {
         console.log(err);
+    }
+}
+
+exports.getPopularProductsCategory = async (req,res)=>{
+    try{
+        let {category} = req.params;
+    
+
+        let categoryData = await CategorySchema.findOne({categoryname:category});
+        
+        let data = await ProductSchema.find({category:categoryData._id,isPopular:true}).populate('category');
+        console.log(data)
+
+        res.status(200).json(data);
+
+    }catch(err){
+        console.log(err)
     }
 }
