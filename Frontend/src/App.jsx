@@ -17,6 +17,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAdminData, login, logout } from './store/slice';
 import Categories from './pages/Category/Categories';
+import Signup from './pages/Auth/Signup';
 
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
      <div className="auth-container-admin">
      <Routes>
       <Route path='/' element={<Signin/>}/>
+      {/* <Route path='/' element={<Signup/>}/> */}
      
       
     </Routes>

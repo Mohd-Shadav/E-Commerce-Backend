@@ -5,9 +5,8 @@ const ProductSchema = require("../models/ProductSchema");
 exports.getProducts =async (req,res)=>{
     let products = await ProductSchema.find().populate('category');
 
-    // let arr = products.map(product=>product.name);
-    // console.log(products)
-    res.json(products);
+    
+    res.status(200).json(products);
 }
 
 exports.createProducts = async (req,res)=>{
@@ -73,7 +72,7 @@ exports.updateProduct = async(req,res)=>{
 
 exports.deleteProduct = async (req,res)=>{
     let {_id} = req.body;
-    console.log(_id);
+  
 
     try{
          let product = await ProductSchema.findOneAndDelete({_id});
@@ -153,7 +152,7 @@ exports.getPopularProductsCategory = async (req,res)=>{
         let categoryData = await CategorySchema.findOne({categoryname:category});
         
         let data = await ProductSchema.find({category:categoryData._id,isPopular:true}).populate('category');
-        console.log(data)
+        
 
         res.status(200).json(data);
 
