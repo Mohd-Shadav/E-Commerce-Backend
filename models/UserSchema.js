@@ -1,8 +1,16 @@
 const mongoose = require('mongoose')
 
 const UserSchema = new mongoose.Schema({
-    name:String,
-    email:String,
+    name:{
+      type:String,
+      required: [true, 'Name is required'],
+    },
+    email:{
+      type:String,
+      required: [true, 'Email is required'],
+      unique: true,
+      match: [/^\S+@\S+\.\S+$/, 'Email must be a valid email address']
+    },
     address: {
   houseNumber: String,      // Flat, house, or door number
   street: String,           // Street name or road
@@ -22,7 +30,10 @@ mobile:{
     
 },
 profileImage:String,
-password:String,
+password:{
+  type:String,
+  required: [true, 'Password is required'],
+},
 cart: [
   {
     product: {
