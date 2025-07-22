@@ -45,6 +45,7 @@ const ProductSchema = new mongoose.Schema({
         ref:'Category',
         required:true
     },
+    subcategory:String,
     date:{
         type:Date,
         default:Date.now

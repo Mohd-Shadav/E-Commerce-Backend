@@ -274,7 +274,7 @@ return (
   ) : (
     <Link to={item.path} key={item.label} style={{ textDecoration: "none" }}>
       <Tooltip title={!open ? item.label : ""} placement="right" arrow>
-        <NavItem button sx={{ px: open ? 2 : 1 }}>
+        <NavItem button="true" sx={{ px: open ? 2 : 1 }}>
           <ListItemIcon
             sx={{
               minWidth: 0,

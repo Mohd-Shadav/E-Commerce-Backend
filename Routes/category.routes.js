@@ -1,5 +1,5 @@
 const express = require('express');
-const { createCategory, getCategories, deleteCategory, updateCategory } = require('../controllers/category.controller');
+const { createCategory, getCategories, deleteCategory, updateCategory, getSubCategories, getCategoryIdByName } = require('../controllers/category.controller');
 const upload = require('../config/multer.config');
 const router = express.Router();
 
@@ -16,5 +16,9 @@ router.post('/create-category', upload.fields([
   router.put('/update-category',updateCategory);
 
   router.delete('/delete-property',deleteCategory);
+
+  router.get('/:category/sub-category',getSubCategories);
+
+  router.get('/category-name/:categoryname',getCategoryIdByName);
 
 module.exports = router;

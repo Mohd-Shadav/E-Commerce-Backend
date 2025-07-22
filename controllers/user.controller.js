@@ -33,6 +33,10 @@ exports.getUser = async(req,res)=>{
 exports.createUser = async (req, res) => {
   try {
     let { name, email, mobile, password } = req.body;
+    
+    let checkEmail = await UserSchema.findOne({email});
+
+    if(checkEmail) return res.status(409).send("User Already Present...")
 
    bcrypt.genSalt(10, (err, salt) => {
       if (err) return res.status(401).send("Failed to generate salt...");
@@ -209,5 +213,46 @@ exports.removeItemFromCart = async(req,res)=>{
   {
     console.log("Something went wrong")
   }
+
+}
+
+exports.userLogin =async (req,res)=>{
+
+  try{
+let token = jwt.sign({ email: req.user.email }, process.env.JWT_SECRET);
+
+res.cookie("userToken", token, {
+  httpOnly: true,
+  secure: false, // true if using HTTPS
+  sameSite: "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+});
+
+res.status(200).json({
+  message: "Login successful",
+  user: req.user,
+});
+
+  }catch(err)
+  {
+    res.status(401).send("something went wrong");
+  
+  }
+
+}
+
+
+exports.userLogout = async (req,res)=>{
+
+  try{
+    res.cookie('userToken',"");
+    res.status(200).send("Token Deleted...");
+
+  }catch(err){
+
+    res.status(401).send("Internal Server Error",err);
+
+  }
+
 
 }

@@ -34,6 +34,7 @@ const Product = ({isDark}) => {
   const [filterStock, setFilterStock] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState([]);
+  const [subCategories,setSubCategories] = useState([]);
   const [callProducts,setCallProducts] = useState(false)
 
 const [formData, setFormData] = useState({
@@ -66,6 +67,7 @@ const [formData, setFormData] = useState({
   isNew:true,
   isPopular:false,
   category: "", // category ID will be stored here
+  subcategory:""
 });
   
 
@@ -245,6 +247,7 @@ const handleFormChange = (e) => {
   reviews: [],
   isFeatured: false,
   category: "", // category ID will be stored here
+  subcategory:""
 })
     
 
@@ -275,11 +278,24 @@ const handleFormChange = (e) => {
     }
   };
 
+  const getSubCategories = async ()=>{
+     try {
+      const res = await axios.get(`http://localhost:3000/api/category/${formData.category}/sub-category`);
+   
+     setSubCategories(res.data);
+     
+    } catch (err) {
+      console.error("Error fetching categories", err);
+    }
+
+  }
+
 
 
   fetchCategories();
 
     getProducts();
+    getSubCategories();
 
   },[searchQuery,formData,callProducts])
 
@@ -528,6 +544,20 @@ const handleFormChange = (e) => {
               <MenuItem value="Out-Stock">Out-Stock</MenuItem>
             </TextField>
           </div>
+                 <TextField
+  label="Sub Category"
+  name="subcategory"
+  select
+  fullWidth
+  onChange={handleFormChange}
+  value={formData.subcategory}
+>
+  {subCategories.map((cat,idx) => (
+    <MenuItem key={idx} value={cat}>
+      {cat}
+    </MenuItem>
+  ))}
+</TextField>
           <TextField
             label="Description"
             name="description"
