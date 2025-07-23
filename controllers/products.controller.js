@@ -160,3 +160,38 @@ exports.getPopularProductsCategory = async (req,res)=>{
         console.log(err)
     }
 }
+
+exports.getFilterizedData = async (req,res)=>{
+    try{
+        
+        let {subcategory,pricerange,rating}  = req.body;
+      
+        let {category} = req.params;
+
+         let categoryData = await CategorySchema.findOne({categoryname:category})
+
+    if(subcategory==="")
+    {
+        let data = await ProductSchema.find({category:categoryData._id,discountprice:{$gt:pricerange[0]?pricerange[0]:100,$lt:pricerange[1]?pricerange[1]:60000},rating:{$gte:rating}})
+      
+          return res.status(200).json(data);
+
+    }else{
+         let data = await ProductSchema.find({category:categoryData._id,subcategory,discountprice:{$gt:pricerange[0]?pricerange[0]:100,$lt:pricerange[1]?pricerange[1]:60000},rating:{$gte:rating}})
+       
+          return res.status(200).json(data);
+
+    }
+
+
+       
+ 
+
+
+
+
+    }catch(err)
+    {
+        res.status(400).send(err);
+    }
+}
