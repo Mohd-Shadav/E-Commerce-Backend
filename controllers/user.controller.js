@@ -2,6 +2,7 @@ const UserSchema = require("../models/UserSchema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const ProductSchema = require("../models/ProductSchema");
+const { default: mongoose } = require("mongoose");
 // const cookieParser 
 
 exports.getAllUsers = async (req, res) => {
@@ -16,18 +17,26 @@ exports.getAllUsers = async (req, res) => {
 
 
 exports.getUser = async(req,res)=>{
-  try{
+
+
     let {userid} = req.params;
+
+if (!mongoose.Types.ObjectId.isValid(userid)) {
+  return res.status(400).send("Invalid user ID");
+}
+      else{
+
  
       let user = await UserSchema.findOne({_id:userid}).select("-password").populate("cart.product");
 
       if(!user) return res.status(401).send("Not Found User..");
 
       res.status(200).json(user)
+      }
+  
+    
 
-  }catch(err){
-    console.log("Internal server error - Users Not Found ", err);
-  }
+ 
 }
 
 exports.createUser = async (req, res) => {
