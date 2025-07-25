@@ -11,7 +11,9 @@ const bcrypt = require('bcrypt');
 
 exports.getAdmin = async (req,res)=>{
 
-  res.status(200).send("logged in successfully...")
+
+
+  res.status(200).json(req.user)
 
 
 }

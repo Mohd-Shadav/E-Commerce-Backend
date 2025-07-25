@@ -137,6 +137,77 @@ exports.addToCart = async (req,res)=>{
   }
 }
 
+
+exports.addToCartByQuantity = async (req,res)=>{
+ try {
+    let {userid,productid,quantitycount} = req.params;
+
+
+      // 1. Fetch product
+    const product = await ProductSchema.findById(productid);
+
+   
+    if (!product) return res.status(404).json({ error: "Product not found" });
+
+   
+
+    // 2. Find the user
+    const user = await UserSchema.findById(userid);
+     
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+
+
+     // 3. Check if product already in cart
+    const cartItemIndex = user.cart.findIndex(
+      (item) => item.product.toString() === productid
+    );
+
+
+
+
+
+    if (cartItemIndex > -1) {
+      // If product already in cart, increase quantity
+  
+
+      user.cart[cartItemIndex].quantity += Number(quantitycount);
+    } else {
+
+    
+      // Else, add new product to cart
+
+   
+         let rupees = Number(quantitycount)*Number(product.price)
+
+
+
+      user.cart.push({
+        product: product._id,
+        quantity: Number(quantitycount),
+        // price:product.price
+       
+      });
+    }
+
+   
+   
+    // 4. Save the user
+    await user.save();
+
+    res.status(200).json({ cart: user.cart ,product});
+
+
+
+
+
+
+  } catch (err) {
+    console.error("Error adding to cart:", err.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
 exports.incrementQuantity = async (req,res) =>{
 
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const { createUser, getAuthorization, addToCart, getUser, getAllUsers, incrementQuantity, decrementQuantity, removeItemFromCart, userLogout, userLogin } = require('../controllers/user.controller');
+const { createUser, getAuthorization, addToCart, getUser, getAllUsers, incrementQuantity, decrementQuantity, removeItemFromCart, userLogout, userLogin, addToCartByQuantity } = require('../controllers/user.controller');
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const { isUser } = require('../middlewares/isUser');
 const router = express.Router();
@@ -18,6 +18,7 @@ router.post('/create-user',createUser);
 router.get('/auth',authMiddleware,getAuthorization)
 
 router.post('/addtocart/:userid/:productid',addToCart);
+router.post('/addtocart/:userid/:productid/:quantitycount',addToCartByQuantity)
 
 router.post('/cart/incrementquantity/:userid/:productid',incrementQuantity)
 router.post('/cart/decrementquantity/:userid/:productid',decrementQuantity)

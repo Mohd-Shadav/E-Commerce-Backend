@@ -49,6 +49,7 @@ cart: [
     },
     price: {
       type: Number,
+    
  
     }
   }

@@ -42,7 +42,7 @@ function Dashboard({isDark}) {
         <h2 style={{marginBottom:"0rem"}}>Welcome <strong>{admin.name}</strong></h2>
      <div style={{display:"flex",alignItems:"center",gap:"1rem" ,marginBottom:"1rem"}}>
            <p>You have <span>46</span> pending orders.</p>
-        <span onMouseEnter={() => setHoverShowOrder(true)} onMouseLeave={() => setHoverShowOrder(false)} style={{border:isDark?"0.2px solid rgba(255, 255, 255, 0.62)":"0.2px solid rgba(47, 47, 218, 0.62)",textAlign:"center",padding:"0.1rem 0.4rem",color:"gray",borderRadius:"20px",color:isDark?"#fff":"#252525",cursor:"pointer",background: hoverShowOrder ? "rgba(46, 46, 46, 0.07)" : "transparent"}}>Show</span>
+        <span onMouseEnter={() => setHoverShowOrder(true)} onMouseLeave={() => setHoverShowOrder(false)} style={{border:isDark?"0.2px solid rgba(255, 255, 255, 0.62)":"0.2px solid rgba(47, 47, 218, 0.62)",textAlign:"center",padding:"0.1rem 0.4rem",borderRadius:"20px",color:isDark?"#fff":"#252525",cursor:"pointer",background: hoverShowOrder ? "rgba(46, 46, 46, 0.07)" : "transparent"}}>Show</span>
      </div>
        </div>
 

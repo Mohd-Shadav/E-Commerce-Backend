@@ -6,6 +6,7 @@ import axios from 'axios'
 import { useDispatch } from "react-redux";
 import {login,logout} from "/src/store/slice.js"
 import { useNavigate } from "react-router-dom";
+import { getAdminData } from "../../store/slice";
 function Signin() {
   const [credentials,setCredentials] = useState({email:"",password:""});
   const navigate = useNavigate();
@@ -26,19 +27,22 @@ function Signin() {
 
 
    try{
-     const data = await axios.post("http://localhost:3000/api/admin/get-admin",credentials,{
+     const res = await axios.post("http://localhost:3000/api/admin/get-admin",credentials,{
       withCredentials:true,
       headers:{
         "Content-Type":"application/json"
       }
     })
 
+
     
 
-   if(data.status == 200)
+   if(res.status == 200)
    {
     
+    
     dispatch(login());
+    dispatch(getAdminData({adminName:res.data.name,adminPic:res.data.image}))
     navigate('/dashboard');
    
   }

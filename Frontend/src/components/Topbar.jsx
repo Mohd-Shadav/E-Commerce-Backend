@@ -31,7 +31,9 @@ const TopBar = () => {
     pic:adminPic
    })
 
-  },[])
+   
+
+  },[adminName,adminPic])
 
 
   return (

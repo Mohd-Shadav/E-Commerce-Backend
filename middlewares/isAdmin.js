@@ -26,6 +26,8 @@ exports.isAdmin = async (req,res,next)=>{
 
                 let token = jwt.sign(email,secret);
                 res.cookie("Token",token);
+
+                req.user = Admin;
                 
                 next();
             }
