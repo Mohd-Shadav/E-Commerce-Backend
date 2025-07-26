@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
       unique: true,
       match: [/^\S+@\S+\.\S+$/, 'Email must be a valid email address']
     },
-    address: {
+  address: {
   houseNumber: String,      // Flat, house, or door number
   street: String,           // Street name or road
   landmark: String,         // Optional: near temple, school, etc.

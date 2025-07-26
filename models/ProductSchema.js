@@ -20,8 +20,8 @@ const ProductSchema = new mongoose.Schema({
       L: { type: Number, default: 0 },
       XL: { type: Number, default: 0 },
     },
-    weight: { type: Number, default: 0 },
-    volume: { type: Number, default: 0 },
+    weight: [Number],
+    volume: [Number],
   },
 
     quantity:{
