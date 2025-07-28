@@ -12,8 +12,11 @@ exports.isAdmin = async (req,res,next)=>{
     let {email,password} = req.body;
 
    
+  
 
     let Admin = await AdminSchema.findOne({email});
+
+    
 
     if(!Admin)
     {

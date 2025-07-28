@@ -21,6 +21,8 @@ exports.getUser = async(req,res)=>{
 
     let {userid} = req.params;
 
+
+
 if (!mongoose.Types.ObjectId.isValid(userid)) {
   return res.status(400).send("Invalid user ID");
 }
@@ -336,3 +338,109 @@ exports.userLogout = async (req,res)=>{
 
 
 }
+
+
+exports.saveAddress = async(req,res)=>{
+  try{
+    let {houseno,street,landmark,city,pincode,district,state,country,type,mobile} = req.body;
+    let {userid} = req.params;
+
+
+    
+
+    if(!userid) return res.status(400).send("User Not found..");
+
+    let user = await UserSchema.findById(userid);
+
+    let addr = {
+      houseno,street,landmark,city,pincode,district,state,country,type,mobile:Number(mobile)
+    }
+
+
+
+    user.address.push(addr);
+
+    await user.save();
+
+    res.status(200).json(user)
+
+
+
+  } catch (err) {
+  console.error("Error saving address:", err); // log full error
+  res.status(400).json({ message: "Address was not added", error: err.message });
+}
+}
+
+
+exports.setDefaultAddress = async (req, res) => {
+  try {
+    let { userid, index } = req.params;
+
+    if (!userid) return res.status(400).send("User not found.");
+
+    let user = await UserSchema.findById(userid);
+    if (!user) return res.status(404).send("User not found in DB.");
+
+    index = Number(index); // Convert to number just in case
+
+    if (isNaN(index) || index < 0 || index >= user.address.length) {
+      return res.status(400).send("Invalid address index.");
+    }
+
+    // Set all addresses' isDefault to false first
+    user.address.forEach((addr, i) => {
+      addr.isDefault = i === index;
+    });
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Default address updated successfully.",
+      addresses: user.address,
+    });
+
+  } catch (err) {
+    console.error("Error setting default address:", err);
+    res.status(400).json({
+      message: "Could not set default address",
+      error: err.message,
+    });
+  }
+};
+
+
+
+exports.removeAddress = async (req, res) => {
+  try {
+    let { userid, index } = req.params;
+
+    if (!userid) return res.status(400).send("User not found.");
+
+    let user = await UserSchema.findById(userid);
+    if (!user) return res.status(404).send("User not found in DB.");
+
+    index = Number(index); // Convert to number just in case
+
+    if (isNaN(index) || index < 0 || index >= user.address.length) {
+      return res.status(400).send("Invalid address index.");
+    }
+
+   
+    user.address.splice(index,1);
+
+    await user.save();
+
+    res.status(200).json({
+      message: "address Deleted successfully.",
+      addresses: user.address,
+    });
+
+  } catch (err) {
+    console.error("Error setting default address:", err);
+    res.status(400).json({
+      message: "Could not set default address",
+      error: err.message,
+    });
+  }
+};
