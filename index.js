@@ -12,6 +12,7 @@ const productsRoutes = require('./Routes/products.routes');
 const categoryRoutes = require('./Routes/category.routes');
 const userRoutes = require('./Routes/user.routes');
 const adminRoutes = require('./Routes/admin.routes');
+const paymentRoutes = require('./Routes/payment.routes');
 
 // app.use(express.json());
 const allowedOrigin = [
@@ -24,12 +25,27 @@ app.use(cors({
     credentials:true
 }))
 app.use(cookieParser());
-app.use(bodyParser.json({limit:"20mb"}))
-app.use(bodyParser.urlencoded({ extended: true, limit: "20mb" }));
-// app.use(express.urlencoded({extended:true}));
+// app.use(bodyParser.json({limit:'20mb'}))
 
+// app.use(bodyParser.urlencoded({ extended: true, limit: "20mb" }));
+// // app.use(express.urlencoded({extended:true}));
+
+//After-----------------------------------------------
+// ✅ Middleware that skips parsing for /api/payment/verify
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/payment/verify') {
+    return next(); // skip parsing for Razorpay webhook
+  }
+
+  bodyParser.json({ limit: '20mb' })(req, res, () => {
+    bodyParser.urlencoded({ extended: true, limit: '20mb' })(req, res, next);
+  });
+});
+// --------------------------
 connectDB();
 
+//payment routes
+app.use('/api/payment',paymentRoutes)
 
 //products
 app.use('/api/products',productsRoutes);
@@ -42,6 +58,9 @@ app.use('/api/users',userRoutes);
 
 //admin routes
 app.use('/api/admin',adminRoutes);
+
+
+
 
 
 

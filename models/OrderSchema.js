@@ -8,10 +8,13 @@ const orderSchema = new mongoose.Schema({
   },
   items: [
     {
-      product: {
+      productID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         required: true
+      },
+      variant:{
+        type:String
       },
       quantity: {
         type: Number,
@@ -25,28 +28,23 @@ const orderSchema = new mongoose.Schema({
     }
   ],
   shippingAddress: {
-    houseNumber: String,
-    street: String,
-    landmark: String,
-    city: String,
-    state: String,
-    pincode: String,
-    country: { type: String, default: 'India' }
+   type:Object
   },
   paymentMethod: {
     type: String,
-    enum: ['COD', 'Stripe'],
-    required: true
+    
+   
   },
   paymentStatus: {
     type: String,
-    enum: ['Pending', 'Paid', 'Failed'],
-    default: 'Pending'
+    
   },
   orderStatus: {
     type: String,
-    enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
-    default: 'Processing'
+    
+  },
+  referenceID:{
+    type:String
   },
   totalAmount: {
     type: Number,

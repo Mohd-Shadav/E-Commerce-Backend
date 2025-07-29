@@ -32,6 +32,17 @@ mobile:{
     match: [/^\d{10}$/, 'Mobile number must be exactly 10 digits']
     
 },
+ orders: [
+    {
+      orderDetails: {
+        type:Object
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 profileImage:String,
 password:{
   type:String,
