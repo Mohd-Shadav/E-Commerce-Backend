@@ -13,6 +13,7 @@ const categoryRoutes = require('./Routes/category.routes');
 const userRoutes = require('./Routes/user.routes');
 const adminRoutes = require('./Routes/admin.routes');
 const paymentRoutes = require('./Routes/payment.routes');
+const orderRoutes = require('./Routes/orders.routes');
 
 // app.use(express.json());
 const allowedOrigin = [
@@ -31,7 +32,7 @@ app.use(cookieParser());
 // // app.use(express.urlencoded({extended:true}));
 
 //After-----------------------------------------------
-// ✅ Middleware that skips parsing for /api/payment/verify
+// Middleware that skips parsing for /api/payment/verify
 app.use((req, res, next) => {
   if (req.originalUrl === '/api/payment/verify') {
     return next(); // skip parsing for Razorpay webhook
@@ -59,6 +60,8 @@ app.use('/api/users',userRoutes);
 //admin routes
 app.use('/api/admin',adminRoutes);
 
+//order routes
+app.use('/api/orders',orderRoutes);
 
 
 

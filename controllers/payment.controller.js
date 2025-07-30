@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const UserSchema = require("../models/UserSchema");
 const { raw } = require("express");
 const OrderSchema = require("../models/OrderSchema");
+const ProductSchema = require("../models/ProductSchema");
 
 const instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -42,7 +43,7 @@ exports.createPayment = async (req, res) => {
         email: true,
       },
       reminder_enable: true,
-      callback_url: "http://localhost:5173/payment-success",
+      callback_url: "http://localhost:5174/payment-success",
       callback_method: "get",
     });
 
@@ -121,7 +122,7 @@ exports.verifyPayment = async (req, res) => {
   
 
     // Save to user’s order history
-    await UserSchema.findByIdAndUpdate(userId, {
+    let userData = await UserSchema.findByIdAndUpdate(userId, {
       $push: {
         orders: {
           orderDetails
@@ -129,14 +130,17 @@ exports.verifyPayment = async (req, res) => {
       },
     });
 
+    let product = await ProductSchema.findById(productID);
+
     await OrderSchema.create({
-        user:userId,
+        user:userData,
         items:{
-            productID,
+            product,
             variant,
             quantity:Number(quantity),
             price:Number(price)
         },
+    orderId:orderId,
     shippingAddress:delivery,
     paymentMethod:"",
     paymentStatus:status,

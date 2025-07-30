@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    type: Object,
+  
     required: true
   },
   items: [
     {
-      productID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
+      product: {
+        type: Object,
+       
         required: true
       },
       variant:{
@@ -27,6 +27,9 @@ const orderSchema = new mongoose.Schema({
       }
     }
   ],
+  orderId:{
+    type:String
+  },
   shippingAddress: {
    type:Object
   },

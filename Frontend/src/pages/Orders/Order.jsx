@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Link, useNavigate} from 'react-router-dom'
 
 import SearchIcon from "@mui/icons-material/Search";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -25,6 +26,9 @@ IconButton,
 Pagination,
 Stack,
 } from "@mui/material";
+
+import axios from 'axios'
+import { useEffect } from "react";
 
 // Mock data
 const summaryData = [
@@ -72,7 +76,7 @@ const mockOrders = [
 // Add more mock orders as needed
 ];
 
-const statusOptions = ["All", "Delivered", "Pending", "Cancelled"];
+const statusOptions = ["All","Booked", "Delivered", "Pending", "Cancelled"];
 
 const PAGE_SIZE = 5;
 
@@ -80,7 +84,10 @@ const Order = ({isDark}) => {
 const [search, setSearch] = useState("");
 const [status, setStatus] = useState("All");
 const [page, setPage] = useState(1);
-
+const [orders,setOrders] = useState([]);
+const [userID,setUserID] = useState("");
+const [user,setUser] = useState([]);
+const navigate = useNavigate();
 // Filter and paginate orders
 const filteredOrders = mockOrders.filter(
     (order) =>
@@ -92,6 +99,36 @@ const paginatedOrders = filteredOrders.slice(
     (page - 1) * PAGE_SIZE,
     page * PAGE_SIZE
 );
+
+
+
+const getAllOrders = async () => {
+
+  try{
+    let res = await axios.get('http://localhost:3000/api/orders/get-all-orders');
+      console.log(res.data)
+    setOrders(res.data);
+
+
+    
+    
+
+
+
+  }catch(err)
+  {
+    alert("failed to load orders...")
+
+  }
+
+}
+
+
+useEffect(()=>{
+
+  getAllOrders();
+
+},[])
 
 return (
     <Box sx={{ p: { xs: 2, md: 4 }, minHeight: "100vh",width: "100%",marginTop: "-20px" }}>
@@ -190,6 +227,8 @@ return (
   <TableHead>
     <TableRow sx={{ backgroundColor: isDark ? "#2c2c2c" : "#f5f5f5" }}>
       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Order ID</TableCell>
+       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Product</TableCell>
+       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Quantity</TableCell>
       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Customer Name</TableCell>
       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Date</TableCell>
       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Amount</TableCell>
@@ -206,33 +245,41 @@ return (
         </TableCell>
       </TableRow>
     ) : (
-      paginatedOrders.map((order) => (
+      orders.map((order,idx) => (
+      
         <TableRow
-          key={order.id}
+          onClick={() => navigate('/order-details', {state: order })}
+          key={order.orderId||idx}
           sx={{
             "&:hover": {
               backgroundColor: isDark ? "#333" : "#f9f9f9",
             },
           }}
         >
-          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.id}</TableCell>
-          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.customer}</TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{ order.orderId && order.orderId.slice(0,3).toUpperCase()+"..." + order.orderId.slice(16,20)  || idx}</TableCell>
           <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
-            {new Date(order.date).toLocaleDateString()}
+            <img src={order.items[0].product.images.thumbnail} alt="" width={50} height={50} style={{objectFit:"cover"}}/>
           </TableCell>
-          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.amount}</TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
+            {order.items[0].quantity}
+          </TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.user.name}</TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
+            {new Date(order.placedAt).toLocaleDateString()}
+          </TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.totalAmount}</TableCell>
           <TableCell>
             <Chip
-              label={order.status}
+              label={order.orderStatus}
               color={orderStatusColors[order.status]}
               size="small"
               sx={{
                 fontWeight: 500,
                 color: "#fff",
                 backgroundColor:
-                  order.status === "Delivered"
+                  order.orderStatus === "Delivered"
                     ? "#4caf50"
-                    : order.status === "Pending"
+                    : order.oderStatus === "Pending"
                     ? "#ff9800"
                     : "#f44336",
               }}
@@ -244,6 +291,7 @@ return (
             </IconButton>
           </TableCell>
         </TableRow>
+    
       ))
     )}
   </TableBody>

@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAdminData, login, logout } from './store/slice';
 import Categories from './pages/Category/Categories';
 import Signup from './pages/Auth/Signup';
+import OrderDetailsCard from './pages/Orders/OrderDetailsCard';
 
 
 function App() {
@@ -104,6 +105,7 @@ function App() {
            <Route path="/categories" element={<Categories isDark={theme}/>} />
           <Route path="/customers" element={<Customer isDark={theme}/>} />
           <Route path='/profile' element={<AdminProfile isDark={theme}/>} />
+          <Route path='/order-details' element={<OrderDetailsCard/>}/>
           <Route path="*" element={<Dashboard/>}/>
         </Routes>
        </div>
