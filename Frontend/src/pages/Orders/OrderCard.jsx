@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { Card, CardContent, Typography, Avatar, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-const GlassCard = styled(Card)(({ theme }) => ({
+const GlassCard = styled(Card)(({ theme,bgColor }) => ({
     borderRadius: 20,
-    boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
-    background: 'rgba(255, 255, 255, 0.7)',
+    // boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+    background: bgColor || 'rgba(255, 255, 255, 0.7)',
     backdropFilter: 'blur(6px)',
     padding: theme.spacing(3),
     transition: 'transform 0.25s cubic-bezier(.21,1.02,.73,1), box-shadow 0.25s',
@@ -22,6 +22,7 @@ const GlassCard = styled(Card)(({ theme }) => ({
         padding: theme.spacing(2),
         minWidth: 0,
     },
+   
 }));
 
 const IconWrapper = styled(Avatar)(({ theme }) => ({
@@ -38,21 +39,29 @@ const IconWrapper = styled(Avatar)(({ theme }) => ({
     },
 }));
 
-const OrderCard = ({ label, value, icon }) => (
-    <GlassCard>
+const OrderCard = ({ label, value,color, icon,totalorders }) => {
+
+    
+
+    return (
+           <GlassCard bgColor={color}>
         <IconWrapper>
             {icon}
         </IconWrapper>
         <CardContent sx={{ padding: 0, flex: 1 }}>
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+            <Typography variant="subtitle2" color="text.secondary"  gutterBottom>
                 {label}
             </Typography>
             <Typography variant="h5" fontWeight={700}>
-                {value}
+                {label==="Total Orders" ? totalorders : value}
             </Typography>
         </CardContent>
     </GlassCard>
-);
+
+    )
+}
+ 
+
 
 OrderCard.propTypes = {
     title: PropTypes.string.isRequired,

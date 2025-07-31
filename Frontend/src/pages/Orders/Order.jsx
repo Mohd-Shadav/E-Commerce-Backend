@@ -29,19 +29,16 @@ Stack,
 
 import axios from 'axios'
 import { useEffect } from "react";
+import { ShoppingCart, LocalShipping, CheckCircle, Pending } from '@mui/icons-material';
 
 // Mock data
-const summaryData = [
-{ label: "Total Orders", value: 1200, color: "primary" },
-{ label: "Delivered", value: 950, color: "success" },
-{ label: "Pending", value: 180, color: "warning" },
-{ label: "Cancelled", value: 70, color: "error" },
-];
+
 
 const orderStatusColors = {
 Delivered: "success",
 Pending: "warning",
 Cancelled: "error",
+Booked:"primary"
 };
 
 const mockOrders = [
@@ -76,7 +73,7 @@ const mockOrders = [
 // Add more mock orders as needed
 ];
 
-const statusOptions = ["All","Booked", "Delivered", "Pending", "Cancelled"];
+const statusOptions = ["All","Booked", "Delivered", "Cancelled"];
 
 const PAGE_SIZE = 5;
 
@@ -87,18 +84,16 @@ const [page, setPage] = useState(1);
 const [orders,setOrders] = useState([]);
 const [userID,setUserID] = useState("");
 const [user,setUser] = useState([]);
+const [summaryData,setSummaryData] = useState([]);
+const [filteredOrders,setFilteredOrders] = useState([]);
+const [paginatedOrders,setPaginatedOrders] = useState([]);
 const navigate = useNavigate();
 // Filter and paginate orders
-const filteredOrders = mockOrders.filter(
-    (order) =>
-        (status === "All" || order.status === status) &&
-        (order.customer.toLowerCase().includes(search.toLowerCase()) ||
-            order.id.toLowerCase().includes(search.toLowerCase()))
-);
-const paginatedOrders = filteredOrders.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
-);
+
+// const paginatedOrders = filteredOrders.slice(
+//     (page - 1) * PAGE_SIZE,
+//     page * PAGE_SIZE
+// );
 
 
 
@@ -106,8 +101,10 @@ const getAllOrders = async () => {
 
   try{
     let res = await axios.get('http://localhost:3000/api/orders/get-all-orders');
-      console.log(res.data)
+      
     setOrders(res.data);
+
+  console.log(res.data)
 
 
     
@@ -124,11 +121,46 @@ const getAllOrders = async () => {
 }
 
 
+
+
 useEffect(()=>{
 
   getAllOrders();
 
+
 },[])
+
+useEffect(() => {
+  const filtered = orders?.filter(
+    (order) =>
+      (status === "All" || order.orderStatus?.toLowerCase() === status.toLowerCase()) &&
+      (
+        order?.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        order?.orderId?.toLowerCase().includes(search.toLowerCase())
+      )
+  );
+
+  setFilteredOrders(filtered);
+  setPaginatedOrders(
+    filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+  );
+}, [search, status, orders, page]);
+
+
+useEffect(() => {
+  if (!orders || orders.length === 0) return;
+
+  let deliveredLength = orders.filter(item => item.orderStatus?.trim().toLowerCase() === "delivered");
+  let bookedLength = orders.filter(item => item.orderStatus?.trim().toLowerCase() === "booked");
+  let cancelledLength = orders.filter(item => item.orderStatus?.trim().toLowerCase() === "cancelled");
+
+  setSummaryData([
+    { label: "Total Orders", value: orders.length,icon:<ShoppingCart/>, color: '#e3f2fd' },
+    { label: "Delivered", value: deliveredLength.length,icon:<LocalShipping/>, color: '#e8f5e9' },
+    { label: "Booked", value: bookedLength.length,icon:<CheckCircle/>, color: '#fffde7' },
+    { label: "Cancelled", value: cancelledLength.length,icon:<Pending/>, color: '#ffebee' },
+  ]);
+}, [orders]);
 
 return (
     <Box sx={{ p: { xs: 2, md: 4 }, minHeight: "100vh",width: "100%",marginTop: "-20px" }}>
@@ -202,13 +234,15 @@ return (
         </Grid>
 
         {/* Summary Cards */}
-        <Grid container spacing={2} sx={{ mb: 4 }}>
+        <Grid container spacing={2} sx={{ mb: 4,display:"flex",justifyContent:"space-around" }}>
             {summaryData.map((card) => (
                 <Grid item xs={12} sm={6} md={3} key={card.label}>
                     <OrderCard
                         label={card.label}
                         value={card.value}
                         color={card.color}
+                        icon={card.icon} 
+                        totalorders={orders.length}
                     />
                 </Grid>
             ))}
@@ -240,12 +274,12 @@ return (
   <TableBody>
     {paginatedOrders.length === 0 ? (
       <TableRow>
-        <TableCell colSpan={6} align="center" sx={{ color: isDark ? "#aaa" : "#666" }}>
+        <TableCell colSpan={8} align="center" sx={{ color: isDark ? "#aaa" : "#666" }}>
           No orders found.
         </TableCell>
       </TableRow>
     ) : (
-      orders.map((order,idx) => (
+      paginatedOrders.map((order,idx) => (
       
         <TableRow
           onClick={() => navigate('/order-details', {state: order })}
@@ -271,7 +305,7 @@ return (
           <TableCell>
             <Chip
               label={order.orderStatus}
-              color={orderStatusColors[order.status]}
+              color={orderStatusColors[order.orderStatus]}
               size="small"
               sx={{
                 fontWeight: 500,
@@ -279,8 +313,8 @@ return (
                 backgroundColor:
                   order.orderStatus === "Delivered"
                     ? "#4caf50"
-                    : order.oderStatus === "Pending"
-                    ? "#ff9800"
+                    : order.orderStatus === "Booked"
+                    ? "#888686ff"
                     : "#f44336",
               }}
             />

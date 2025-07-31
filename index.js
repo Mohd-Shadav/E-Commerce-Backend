@@ -43,7 +43,7 @@ app.use((req, res, next) => {
   });
 });
 // --------------------------
-connectDB();
+connectDB();              
 
 //payment routes
 app.use('/api/payment',paymentRoutes)
