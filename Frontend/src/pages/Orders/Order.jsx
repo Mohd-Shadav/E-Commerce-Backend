@@ -104,7 +104,7 @@ const getAllOrders = async () => {
       
     setOrders(res.data);
 
-  console.log(res.data)
+
 
 
     
@@ -301,7 +301,7 @@ return (
           <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
             {new Date(order.placedAt).toLocaleDateString()}
           </TableCell>
-          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.totalAmount}</TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>₹ {order.totalAmount}</TableCell>
           <TableCell>
             <Chip
               label={order.orderStatus}
