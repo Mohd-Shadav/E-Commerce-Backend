@@ -124,6 +124,7 @@ exports.addToCart = async (req,res)=>{
       user.cart.push({
         product: product._id,
         quantity: 1,
+        // variant:
         price: product.price, // optional: store price at time of adding
       });
     }
@@ -142,8 +143,10 @@ exports.addToCart = async (req,res)=>{
 
 exports.addToCartByQuantity = async (req,res)=>{
  try {
-    let {userid,productid,quantitycount} = req.params;
+    let {userid,productid,quantitycount,variant} = req.params;
 
+
+    console.log(variant)
 
       // 1. Fetch product
     const product = await ProductSchema.findById(productid);
@@ -174,19 +177,21 @@ exports.addToCartByQuantity = async (req,res)=>{
   
 
       user.cart[cartItemIndex].quantity += Number(quantitycount);
+      user.cart[cartItemIndex].variant = variant
     } else {
 
     
       // Else, add new product to cart
 
    
-         let rupees = Number(quantitycount)*Number(product.price)
+       
 
 
 
       user.cart.push({
         product: product._id,
         quantity: Number(quantitycount),
+        variant
         // price:product.price
        
       });

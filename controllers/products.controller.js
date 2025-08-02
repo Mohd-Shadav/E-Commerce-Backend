@@ -106,6 +106,8 @@ exports.getProductsByCategory = async(req,res)=>{
 exports.getproductById = async(req,res)=>{
     try{
         const {productId} = req.params;
+
+        console.log(productId)
      
 
         let data = await ProductSchema.findOne({_id:productId}).populate('category');

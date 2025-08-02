@@ -25,6 +25,8 @@ Chip,
 IconButton,
 Pagination,
 Stack,
+AvatarGroup,
+Avatar,
 } from "@mui/material";
 
 import axios from 'axios'
@@ -101,7 +103,7 @@ const getAllOrders = async () => {
 
   try{
     let res = await axios.get('http://localhost:3000/api/orders/get-all-orders');
-      
+    
     setOrders(res.data);
 
 
@@ -292,10 +294,29 @@ return (
         >
           <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{ order.orderId && order.orderId.slice(0,3).toUpperCase()+"..." + order.orderId.slice(16,20)  || idx}</TableCell>
           <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
-            <img src={order.items[0].product.images.thumbnail} alt="" width={50} height={50} style={{objectFit:"cover"}}/>
+            {order?.items?.length<=1 ? (
+                //  <img src={order.items[0].product.images.thumbnail} alt="" width={50} height={50} style={{objectFit:"cover"}}/>
+                   <Avatar alt="Remy Sharp" src={order.items[0].product.images.thumbnail}/>
+            ):(
+              <div className="" style={{width:"50px",height:"50px",objectFit:"cover",display:"flex"}}>
+               <AvatarGroup max={2}>
+  {order.items.map((item, index) => (
+    <Avatar
+      key={index}
+      alt={`Product ${index + 1}`}
+      src={item.product.images.thumbnail}
+    />
+  ))}
+</AvatarGroup>
+                  
+                  
+              </div>
+
+            )}
+           
           </TableCell>
           <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
-            {order.items[0].quantity}
+ {order.items.map((item) => item.quantity).join(" + ")}
           </TableCell>
           <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.user.name}</TableCell>
           <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>

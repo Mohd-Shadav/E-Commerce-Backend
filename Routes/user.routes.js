@@ -18,7 +18,7 @@ router.post('/create-user',createUser);
 router.get('/auth',authMiddleware,getAuthorization)
 
 router.post('/addtocart/:userid/:productid',addToCart);
-router.post('/addtocart/:userid/:productid/:quantitycount',addToCartByQuantity)
+router.post('/addtocart/:userid/:productid/:quantitycount/:variant',addToCartByQuantity)
 
 router.post('/cart/incrementquantity/:userid/:productid',incrementQuantity)
 router.post('/cart/decrementquantity/:userid/:productid',decrementQuantity)

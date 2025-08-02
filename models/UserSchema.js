@@ -65,6 +65,10 @@ cart: [
       type: Number,
     
  
+    },
+    variant:{
+      type:String
+
     }
   }
 ]
