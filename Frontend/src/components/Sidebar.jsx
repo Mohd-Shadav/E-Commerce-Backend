@@ -96,6 +96,7 @@ const [menuActive,setMenuActive] = useState("/dashboard");
         withCredentials:true
     })
     
+    console.log("hanlde logout",data);
     if(data.status == 200)
     {
       dispatch(logout());
