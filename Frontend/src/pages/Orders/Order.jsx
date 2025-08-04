@@ -323,23 +323,50 @@ return (
             {new Date(order.placedAt).toLocaleDateString()}
           </TableCell>
           <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>₹ {order.totalAmount}</TableCell>
-          <TableCell>
-            <Chip
-              label={order.orderStatus}
-              color={orderStatusColors[order.orderStatus]}
-              size="small"
-              sx={{
-                fontWeight: 500,
-                color: "#fff",
-                backgroundColor:
-                  order.orderStatus === "Delivered"
-                    ? "#4caf50"
-                    : order.orderStatus === "Booked"
-                    ? "#888686ff"
-                    : "#f44336",
-              }}
-            />
-          </TableCell>
+       <TableCell>
+  <FormControl fullWidth size="small" variant="standard">
+    <Select
+      value={order.orderStatus}
+      onChange={async (e) => {
+        const newStatus = e.target.value;
+
+        try {
+          await axios.patch(`http://localhost:3000/api/orders/update-status/${order._id}`, {
+            status: newStatus,
+          });
+
+          // Update locally
+          setOrders((prev) =>
+            prev.map((o) =>
+              o._id === order._id ? { ...o, orderStatus: newStatus } : o
+            )
+          );
+        } catch (err) {
+          alert("Failed to update status");
+          console.error(err);
+        }
+      }}
+      sx={{
+        backgroundColor:
+          order.orderStatus === "Delivered"
+            ? "#4caf50"
+            : order.orderStatus === "Booked"
+            ? "#888686ff"
+            : "#f44336",
+        color: "#fff",
+        fontWeight: 600,
+        borderRadius: 1,
+        pl: 1,
+        pr: 1,
+      }}
+    >
+      <MenuItem value="Booked">Booked</MenuItem>
+      <MenuItem value="Shipped">Shipped</MenuItem>
+      <MenuItem value="Delivered">Delivered</MenuItem>
+      <MenuItem value="Cancelled">Cancelled</MenuItem>
+    </Select>
+  </FormControl>
+</TableCell>
           <TableCell align="right">
             <IconButton>
               <MoreVertIcon sx={{ color: isDark ? "#fff" : "#252525" }} />

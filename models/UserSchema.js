@@ -34,6 +34,10 @@ mobile:{
 },
  orders: [
     {
+      orderId:{
+          type:mongoose.Schema.Types.ObjectId,
+          ref:'Order'
+      },
       orderDetails: {
         type:Object
       },

@@ -29,6 +29,10 @@ exports.getMyOrders = async (req,res)=>{
       path:"user",
       select:"-password"
     });
+
+
+    console.log(orders)
+    
   
     res.status(200).json(orders);
 
@@ -38,3 +42,23 @@ exports.getMyOrders = async (req,res)=>{
   }
 }
 
+
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    console.log(orderId,status)
+
+    const order = await OrderSchema.findByIdAndUpdate(orderId, {
+      orderStatus: status,
+    }, { new: true });
+
+    if (!order) return res.status(404).send("Order not found");
+
+    res.status(200).json(order);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};

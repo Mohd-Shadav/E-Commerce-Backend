@@ -29,7 +29,7 @@ if (!mongoose.Types.ObjectId.isValid(userid)) {
       else{
 
  
-      let user = await UserSchema.findOne({_id:userid}).select("-password").populate("cart.product");
+      let user = await UserSchema.findOne({_id:userid}).select("-password").populate("cart.product").populate("orders._id");
 
       if(!user) return res.status(401).send("Not Found User..");
 

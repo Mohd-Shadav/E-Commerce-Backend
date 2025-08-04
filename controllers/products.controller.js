@@ -107,7 +107,7 @@ exports.getproductById = async(req,res)=>{
     try{
         const {productId} = req.params;
 
-        console.log(productId)
+
      
 
         let data = await ProductSchema.findOne({_id:productId}).populate('category');
@@ -195,5 +195,25 @@ exports.getFilterizedData = async (req,res)=>{
     }catch(err)
     {
         res.status(400).send(err);
+    }
+}
+
+
+exports.getProductsByName = async (req,res) =>{
+    try{
+
+       
+        let {productname}  = req.params;
+
+       let products = await ProductSchema.find({
+  name: { $regex: productname, $options: 'i' } // 'i' for case-insensitive
+});
+
+res.status(200).json(products);
+
+
+    }catch(err)
+    {
+        res.status(404).send("Not Found")
     }
 }
