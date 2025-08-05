@@ -1,3 +1,4 @@
+import { Avatar, AvatarGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import React from "react";
 
 // Example data
@@ -44,105 +45,95 @@ const statusMap = {
     },
 };
 
-const RecentBookingListItem = ({isDark}) => (
-    <div className="booking-table" style={{background:isDark ? "#252525":"#fff"}}>
-        <div className="booking-table-header" style={{color:isDark?"#fff":"#252525",background:isDark ? "#252525":"#fff"}}>
-            <div>Product</div>
-            <div>Date</div>
-            <div>Price</div>
-            <div>Status</div>
-        </div>
-        {bookings.map((b) => {
-            const status = statusMap[b.status] || {};
-            return (
-                <div className="booking-table-row" key={b.id} style={{color:isDark?"#fff":"#252525",background:isDark ? "#252525":"#fff"}}  >
-                    <div data-label="Service Name" style={{color:isDark?"#fff":"#252525"}}>{b.service}</div>
-                    <div data-label="Date">{b.date}</div>
-                    <div data-label="Price">{b.price}</div>
-                    <div data-label="Status">
-                        <span
-                            className="status-tag"
-                            style={{
-                                color:"#252525",
-                                background: status.bg,
-                                borderColor: status.color,
-                            }}
-                        >
-                            <span className="status-icon">{status.icon}</span>
-                            {b.status}
-                        </span>
-                    </div>
-                </div>
-            );
-        })}
-        <style>{`
-            .booking-table {
-                font-family: 'Segoe UI', Arial, sans-serif;
-                border: 1px solid #e0e0e0;
-                border-radius: 8px;
-                overflow: hidden;
-                width:70px
-                margin: 0 auto;
-                background: #fff;
-            }
-            .booking-table-header, .booking-table-row {
-                display: grid;
-                grid-template-columns: 2fr 1fr 1fr 1fr;
-                align-items: center;
-                padding: 16px;
-                border-bottom: 1px solid #f0f0f0;
-            }
-            .booking-table-header {
-                background: #f9f9f9;
-                font-weight: 600;
-                font-size: 1rem;
-            }
-            .booking-table-row:last-child {
-                border-bottom: none;
-            }
-            .booking-table-row {
-                font-size: 0.98rem;
-            }
-            .status-tag {
-                display: inline-flex;
-                align-items: center;
-                font-weight: 500;
-                padding: 4px 10px;
-                border-radius: 16px;
-                border: 1px solid;
-                font-size: 0.95em;
-                gap: 6px;
-            }
-            .status-icon {
-                font-size: 1.1em;
-            }
-            @media (max-width: 600px) {
-                .booking-table-header {
-                    display: none;
-                }
-                .booking-table-row {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    padding: 14px 12px;
-                    border-bottom: 1px solid #f0f0f0;
-                }
-                .booking-table-row > div {
-                    width: 100%;
-                    margin-bottom: 6px;
-                    font-size: 1em;
-                }
-                .booking-table-row > div:last-child {
-                    margin-bottom: 0;
-                }
-                .booking-table-row > div[data-label]:before {
-                    content: attr(data-label) ": ";
-                    font-weight: 600;
-                    color: #888;
-                }
-            }
-        `}</style>
-    </div>
+const RecentBookingListItem = ({isDark,order}) => (
+    <TableContainer sx={{
+    backgroundColor: isDark ? "#1e1e1e" : "#fff",
+    color: isDark ? "#fff" : "#252525",
+    borderRadius: 2,
+  }}>
+               <Table sx={{ backgroundColor: isDark ? "#1e1e1e" : "#fff" }}>
+  <TableHead>
+    <TableRow sx={{ backgroundColor: isDark ? "#2c2c2c" : "#f5f5f5" }}>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Order ID</TableCell>
+       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Product</TableCell>
+       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Quantity</TableCell>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Customer Name</TableCell>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Date</TableCell>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Amount</TableCell>
+      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Status</TableCell>
+      {/* <TableCell sx={{ color: isDark ? "#fff" : "#252525" }} align="right">Actions</TableCell> */}
+    </TableRow>
+  </TableHead>
+
+  <TableBody>
+    {order.length === 0 ? (
+      <TableRow>
+        <TableCell colSpan={8} align="center" sx={{ color: isDark ? "#aaa" : "#666" }}>
+          No orders found.
+        </TableCell>
+      </TableRow>
+    ) : (
+      order.map((order,idx) => (
+      
+        <TableRow
+         
+          key={order.orderId||idx}
+          sx={{
+            "&:hover": {
+              backgroundColor: isDark ? "#333" : "#f9f9f9",
+            },
+          }}
+        >
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{ order.orderId && order.orderId.slice(0,3).toUpperCase()+"..." + order.orderId.slice(16,20)  || idx}</TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
+            {order?.items?.length<=1 ? (
+                //  <img src={order.items[0].product.images.thumbnail} alt="" width={50} height={50} style={{objectFit:"cover"}}/>
+                   <Avatar alt="Remy Sharp" src={order.items[0].product.images.thumbnail} sx={{cursor:"pointer"}}
+       onClick={() => navigate('/order-details', {state: order })}/>
+            ):(
+              <div className="" style={{width:"50px",height:"50px",objectFit:"cover",display:"flex"}}>
+               <AvatarGroup max={2}>
+  {order.items.map((item, index) => (
+    <Avatar
+      key={index}
+      alt={`Product ${index + 1}`}
+      src={item.product.images.thumbnail}
+      sx={{cursor:"pointer"}}
+       onClick={() => navigate('/order-details', {state: order })}
+    />
+  ))}
+</AvatarGroup>
+                  
+                  
+              </div>
+
+            )}
+           
+          </TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
+ {order.items.map((item) => item.quantity).join(" + ")}
+          </TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>{order.user.name}</TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
+            {new Date(order.placedAt).toLocaleDateString()}
+          </TableCell>
+          <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>₹ {order.totalAmount}</TableCell>
+       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
+   {order.orderStatus}
+</TableCell>
+          {/* <TableCell align="right">
+            <IconButton>
+              <MoreVertIcon sx={{ color: isDark ? "#fff" : "#252525" }} />
+            </IconButton>
+          </TableCell> */}
+        </TableRow>
+    
+      ))
+    )}
+  </TableBody>
+</Table>
+
+            </TableContainer>
 );
 
 export default RecentBookingListItem;

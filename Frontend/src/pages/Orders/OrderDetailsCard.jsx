@@ -16,9 +16,7 @@ export default function OrderDetailsPage() {
   const { state } = useLocation();
   const order = state;
 
-  useEffect(() => {
-    console.log("Order Details State:", state);
-  }, []);
+
 
   if (!order) return <Typography mt={4} align="center">No order data found.</Typography>;
 
@@ -83,16 +81,16 @@ export default function OrderDetailsPage() {
               🧾 Order Summary
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Order ID: <strong>{order._id}</strong>
+              Order ID: <strong>{order.orderId}</strong>
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Payment Status: {order.paymentStatus}
+              Payment Status: <strong>{order.paymentStatus}</strong> 
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Order Status: {order.orderStatus}
+              Order Status: <strong>{order.orderStatus}</strong> 
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Total Amount: ₹{order.totalAmount}
+              Total Amount: <strong> ₹{order.totalAmount}</strong>
             </Typography>
           </Paper>
 
@@ -142,8 +140,7 @@ export default function OrderDetailsPage() {
                     Variant: {item.variant} | Qty: {item.quantity}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    ₹{item.price} x {item.quantity} = ₹
-                    {item.price * item.quantity}
+                    ₹{item.price / item.quantity} * {item.quantity} = ₹ {item.price}
                   </Typography>
                 </Grid>
               </Grid>

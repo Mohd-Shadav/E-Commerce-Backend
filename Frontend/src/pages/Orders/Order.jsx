@@ -27,6 +27,7 @@ Pagination,
 Stack,
 AvatarGroup,
 Avatar,
+Tooltip,
 } from "@mui/material";
 
 import axios from 'axios'
@@ -106,6 +107,8 @@ const getAllOrders = async () => {
     
     setOrders(res.data);
 
+    console.log(res.data)
+
 
 
 
@@ -146,6 +149,8 @@ useEffect(() => {
   setPaginatedOrders(
     filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
   );
+
+  
 }, [search, status, orders, page]);
 
 
@@ -153,13 +158,13 @@ useEffect(() => {
   if (!orders || orders.length === 0) return;
 
   let deliveredLength = orders.filter(item => item.orderStatus?.trim().toLowerCase() === "delivered");
-  let bookedLength = orders.filter(item => item.orderStatus?.trim().toLowerCase() === "booked");
+  let shippedLength = orders.filter(item => item.orderStatus?.trim().toLowerCase() === "shipped");
   let cancelledLength = orders.filter(item => item.orderStatus?.trim().toLowerCase() === "cancelled");
 
   setSummaryData([
     { label: "Total Orders", value: orders.length,icon:<ShoppingCart/>, color: '#e3f2fd' },
     { label: "Delivered", value: deliveredLength.length,icon:<LocalShipping/>, color: '#e8f5e9' },
-    { label: "Booked", value: bookedLength.length,icon:<CheckCircle/>, color: '#fffde7' },
+    { label: "Shipped", value: shippedLength.length,icon:<CheckCircle/>, color: '#fffde7' },
     { label: "Cancelled", value: cancelledLength.length,icon:<Pending/>, color: '#ffebee' },
   ]);
 }, [orders]);
@@ -269,7 +274,7 @@ return (
       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Date</TableCell>
       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Amount</TableCell>
       <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>Status</TableCell>
-      <TableCell sx={{ color: isDark ? "#fff" : "#252525" }} align="right">Actions</TableCell>
+      {/* <TableCell sx={{ color: isDark ? "#fff" : "#252525" }} align="right">Actions</TableCell> */}
     </TableRow>
   </TableHead>
 
@@ -284,7 +289,7 @@ return (
       paginatedOrders.map((order,idx) => (
       
         <TableRow
-          onClick={() => navigate('/order-details', {state: order })}
+         
           key={order.orderId||idx}
           sx={{
             "&:hover": {
@@ -296,7 +301,8 @@ return (
           <TableCell sx={{ color: isDark ? "#fff" : "#252525" }}>
             {order?.items?.length<=1 ? (
                 //  <img src={order.items[0].product.images.thumbnail} alt="" width={50} height={50} style={{objectFit:"cover"}}/>
-                   <Avatar alt="Remy Sharp" src={order.items[0].product.images.thumbnail}/>
+                   <Avatar alt="Remy Sharp" src={order.items[0].product.images.thumbnail} sx={{cursor:"pointer"}}
+       onClick={() => navigate('/order-details', {state: order })}/>
             ):(
               <div className="" style={{width:"50px",height:"50px",objectFit:"cover",display:"flex"}}>
                <AvatarGroup max={2}>
@@ -305,6 +311,8 @@ return (
       key={index}
       alt={`Product ${index + 1}`}
       src={item.product.images.thumbnail}
+      sx={{cursor:"pointer"}}
+       onClick={() => navigate('/order-details', {state: order })}
     />
   ))}
 </AvatarGroup>
@@ -327,18 +335,30 @@ return (
   <FormControl fullWidth size="small" variant="standard">
     <Select
       value={order.orderStatus}
+      renderValue={(selected) =>
+        selected === "Cancelled" ? (
+          <Tooltip title={order.source} placement="top">
+            <span>{selected}</span>
+          </Tooltip>
+        ) : (
+          <span>{selected || "Select status"}</span>
+        )
+      }
       onChange={async (e) => {
         const newStatus = e.target.value;
 
         try {
-          await axios.patch(`http://localhost:3000/api/orders/update-status/${order._id}`, {
+          let data = await axios.patch(`http://localhost:3000/api/orders/update-status/${order._id}`, {
             status: newStatus,
+            source:"admin"
           });
+
+
 
           // Update locally
           setOrders((prev) =>
             prev.map((o) =>
-              o._id === order._id ? { ...o, orderStatus: newStatus } : o
+              o._id === order._id ? { ...o, orderStatus: newStatus,source:data.data.source} : o
             )
           );
         } catch (err) {
@@ -349,29 +369,33 @@ return (
       sx={{
         backgroundColor:
           order.orderStatus === "Delivered"
-            ? "#4caf50"
+            ? "#b6fcbcff"
             : order.orderStatus === "Booked"
-            ? "#888686ff"
-            : "#f44336",
-        color: "#fff",
+            ? "	#ffffe0" :
+            order.orderStatus === "Shipped"
+            ? "	#b0e0e6"
+            : "#ff8585ff",
+        color: "#252525c2",
         fontWeight: 600,
         borderRadius: 1,
         pl: 1,
         pr: 1,
+        padding:"10px",
+        // width:"150px"
       }}
     >
       <MenuItem value="Booked">Booked</MenuItem>
       <MenuItem value="Shipped">Shipped</MenuItem>
       <MenuItem value="Delivered">Delivered</MenuItem>
-      <MenuItem value="Cancelled">Cancelled</MenuItem>
+<MenuItem value="Cancelled">Cancelled</MenuItem>
     </Select>
   </FormControl>
 </TableCell>
-          <TableCell align="right">
+          {/* <TableCell align="right">
             <IconButton>
               <MoreVertIcon sx={{ color: isDark ? "#fff" : "#252525" }} />
             </IconButton>
-          </TableCell>
+          </TableCell> */}
         </TableRow>
     
       ))

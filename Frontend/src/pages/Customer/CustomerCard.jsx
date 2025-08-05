@@ -1,85 +1,103 @@
-// src/pages/Customer/CustomerCard.jsx
-
-import React, { useRef } from 'react';
-import PropTypes from 'prop-types';
+// UserCard.jsx
+import React from "react";
 import {
   Card,
   CardContent,
   Typography,
-  Avatar,
+  Stack,
   Box,
-  Rating,
-} from '@mui/material';
+  Divider,
+  Chip,
+} from "@mui/material";
 
-const CustomerCard = ({ name, email, phone, location, rating, avatar, testimonial }) => {
-  const cardRef = useRef(null);
+const UserCard = ({ user }) => {
+  const { _id, name, email, mobile, cart, address, orders } = user;
 
-  const handleMouseMove = (e) => {
-    const card = cardRef.current;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    card.style.transform = `rotateY(${x * 0.03}deg) rotateX(${y * -0.03}deg)`;
-  };
 
-  const handleMouseLeave = () => {
-    const card = cardRef.current;
-    card.style.transform = 'rotateY(0deg) rotateX(0deg)';
-  };
+
+  const primaryAddress = address?.[0];
+  const latestOrder = orders?.[orders.length - 1];
 
   return (
-    <Box sx={{ perspective: '1000px' }}>
-      <Card
-        ref={cardRef}
-        className="card"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        sx={{
-          transition: 'transform 0.4s',
-          transformStyle: 'preserve-3d',
-          background: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(10px)',
-          borderRadius: 4,
-          boxShadow: 4,
-          cursor: 'default',
-          p: 2,
-        }}
-      >
-        <CardContent>
-          <Box display="flex" alignItems="center" gap={2} mb={2}>
-            <Avatar src={avatar} alt={name} sx={{ width: 56, height: 56 }} />
-            <Box>
-              <Typography variant="h6">{name}</Typography>
-              <Typography variant="body2" color="text.secondary">{location}</Typography>
-            </Box>
+    <Card
+      sx={{
+        width:"100%",
+        m: 2,
+        p: 2,
+        borderRadius: 3,
+        boxShadow: 5,
+        transition: "all 0.3s ease",
+        ":hover": { boxShadow: 10 },
+      }}
+    >
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          User Info
+        </Typography>
+        <Stack spacing={1}>
+          <Typography variant="body2">ID: {_id}</Typography>
+          <Typography>Name: {name}</Typography>
+          <Typography>Email: {email}</Typography>
+          <Typography>Mobile: {mobile}</Typography>
+        </Stack>
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography variant="h6" gutterBottom>
+          Address
+        </Typography>
+        {primaryAddress ? (
+          <Stack spacing={0.5}>
+            <Typography>
+              {primaryAddress.houseno}, {primaryAddress.street}
+            </Typography>
+            <Typography>
+              {primaryAddress.landmark}, {primaryAddress.city},{" "}
+              {primaryAddress.state} - {primaryAddress.pincode}
+            </Typography>
+            <Typography>
+              {primaryAddress.country} ({primaryAddress.type})
+            </Typography>
+          </Stack>
+        ) : (
+          <Typography>No address found.</Typography>
+        )}
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography variant="h6" gutterBottom>
+          Cart Items ({cart?.length || 0})
+        </Typography>
+        {cart?.map((item, idx) => (
+          <Typography key={item._id}>
+            {idx + 1}. Product ID: {item.product}, Qty: {item.quantity}
+          </Typography>
+        ))}
+
+        <Divider sx={{ my: 2 }} />
+
+        <Typography variant="h6" gutterBottom>
+          Orders ({orders?.length || 0})
+        </Typography>
+        {latestOrder ? (
+          <Box>
+            <Typography>
+              Order ID: {latestOrder.orderDetails?.orderId}
+            </Typography>
+            <Typography>Status: {latestOrder.status}</Typography>
+            <Typography>Price: ₹{latestOrder.price}</Typography>
+            {latestOrder.product?.map((prod, i) => (
+              <Typography key={i}>
+                - {prod.quantity} x {prod.variant}
+              </Typography>
+            ))}
           </Box>
-
-          <Typography variant="body2" fontWeight={500}>
-            📞 {phone}
-          </Typography>
-          <Typography variant="body2" fontWeight={500} gutterBottom>
-            📧 {email}
-          </Typography>
-
-          {testimonial && (
-            <Typography variant="body2" mt={1}>"{testimonial}"</Typography>
-          )}
-
-          <Rating value={rating} readOnly sx={{ mt: 1 }} />
-        </CardContent>
-      </Card>
-    </Box>
+        ) : (
+          <Typography>No orders yet.</Typography>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
-CustomerCard.propTypes = {
-  name: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
-  phone: PropTypes.string.isRequired,
-  location: PropTypes.string.isRequired,
-  rating: PropTypes.number.isRequired,
-  avatar: PropTypes.string.isRequired,
-  testimonial: PropTypes.string,
-};
-
-export default CustomerCard;
+export default UserCard;

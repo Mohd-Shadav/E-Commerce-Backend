@@ -42,6 +42,8 @@ const iconWrapper = {
 function DashboardOrdersCard({ heading, icon, value }) {
   const [hover, setHover] = React.useState(false);
 
+  console.log()
+
   return (
     <div
       style={hover ? cardHover : card}
