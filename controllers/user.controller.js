@@ -99,6 +99,31 @@ exports.getAuthorization = async (req,res) =>{
 }
 
 
+exports.updateUserData = async(req,res)=>{
+  try{
+
+    let {_id,name,email,mobile} = req.body;
+
+
+
+    let user = await UserSchema.findOneAndUpdate({_id},{name,email,mobile},{new:true});
+   
+
+    if(!user)
+    {
+       return res.status(400).send("credentials not taken")
+    }
+
+
+
+     res.status(200).json(user)
+
+  }catch(err)
+  {
+    res.status(400).send("Failed to edit user")
+  }
+}
+
 exports.addToCart = async (req,res)=>{
  try {
     const { userid, productid } = req.params;

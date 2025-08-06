@@ -23,7 +23,7 @@ exports.getMyOrders = async (req,res)=>{
 
     let {userid} = req.params
 
-    console.log(userid)
+
 
 
 
@@ -33,7 +33,7 @@ exports.getMyOrders = async (req,res)=>{
     });
 
 
-    console.log(orders)
+   
     
   
     res.status(200).json(orders);
@@ -91,6 +91,7 @@ exports.getMonthlySales = async (req, res) => {
       {
         $match: {
           orderStatus: "Delivered",
+          paymentStatus:"paid"
         },
       },
       {
