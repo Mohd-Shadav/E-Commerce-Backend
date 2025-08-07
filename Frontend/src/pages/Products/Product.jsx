@@ -22,6 +22,7 @@ import ProductCard from "./ProductCard";
 import axios from "axios";
 import { header } from "framer-motion/client";
 import NoResultFound from "../NoResultFound/NoResultFound";
+import ReactSkeleton from "../../components/ReactSkeleton";
 
 
 
@@ -36,6 +37,7 @@ const Product = ({isDark}) => {
   const [categories, setCategories] = useState([]);
   const [subCategories,setSubCategories] = useState([]);
   const [callProducts,setCallProducts] = useState(false)
+  const [loading, setLoading] = useState(true); // <-- NEW
 
 const [formData, setFormData] = useState({
   name: "",
@@ -261,10 +263,24 @@ const handleFormChange = (e) => {
   useEffect(()=>{
     const getProducts =async ()=>{
 
-      const result = await axios.get("http://localhost:3000/api/products/get-products")
+
+      try{
+           const result = await axios.get("http://localhost:3000/api/products/get-products")
 
   
-   setProducts(result.data);
+           setProducts(result.data);
+
+      }catch(err)
+      {
+        alert("Error : Failed to load products")
+      }finally
+      {
+
+         setLoading(false); // hide skeletons after fetch
+
+      }
+
+
     }
 
      const fetchCategories = async () => {
@@ -458,15 +474,30 @@ const handleFormChange = (e) => {
       </Grid>
 
       <Grid container spacing={3}>
-        {filteredProducts.length>0 ? ( filteredProducts.map((product) => (
-          <Grid item xs={12} sm={6} md={4} key={product.id}>
-            <ProductCard product={product} onDelete={handleDelete} isDark={isDark} setCallProducts={setCallProducts}/>
-          </Grid>
-        ))) : (
-          <div style={{width:"100%"}}>
-            <NoResultFound/>
-          </div>
-        )}
+      {loading ? (
+  Array.from({ length: 6 }).map((_, index) => (
+    <Grid item xs={12} sm={6} md={4} key={index}>
+      <ReactSkeleton/> 
+    </Grid>
+  ))
+) : (
+  filteredProducts.length > 0 ? (
+    filteredProducts.map((product) => (
+      <Grid item xs={12} sm={6} md={4} key={product._id}>
+        <ProductCard
+          product={product}
+          onDelete={handleDelete}
+          isDark={isDark}
+          setCallProducts={setCallProducts}
+        />
+      </Grid>
+    ))
+  ) : (
+    <div style={{ width: "100%" }}>
+      <NoResultFound />
+    </div>
+  )
+)}
       </Grid>
 
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import CustomerCard from './CustomerCard'
 import axios from 'axios'
+import { Box, TextField } from '@mui/material'
 
 function Customer() {
 
@@ -19,6 +20,11 @@ fetchCustomers()
 
   return (
     <div style={{width:"80%"}}>
+     <Box>
+      <TextField label="Search User by name,email"/>    
+
+     </Box>
+
       {user.map((item)=>{
         return (<CustomerCard user={item}/>)
       })}

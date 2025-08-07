@@ -29,8 +29,9 @@ import 'swiper/css/navigation';
 // import required modules
 import { Navigation } from 'swiper/modules';
 import axios from "axios";
+import ReactSkeleton from "../../components/ReactSkeleton";
 
-const ProductCard = ({ product, onDelete,isDark,setCallProducts }) => {
+const ProductCard = ({ product, onDelete,isDark,setCallProducts,loading }) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [formData,setFormData] = useState({ ...product })
@@ -183,7 +184,7 @@ useEffect(()=>{
 
   return (
     <>
-      <Card
+    <Card
         elevation={6}
         sx={{
           borderRadius: 3,
@@ -252,6 +253,8 @@ useEffect(()=>{
           </Box>
         </CardContent>
       </Card>
+
+
 
       {/* View Modal */}
       <Dialog open={openView} onClose={handleViewClose} fullScreen={fullScreen}>

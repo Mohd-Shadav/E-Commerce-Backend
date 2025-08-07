@@ -19,6 +19,7 @@ import { getAdminData, login, logout } from './store/slice';
 import Categories from './pages/Category/Categories';
 import Signup from './pages/Auth/Signup';
 import OrderDetailsCard from './pages/Orders/OrderDetailsCard';
+import ReactSkeleton from './components/ReactSkeleton';
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
   return (
     <div className="loader-wrapper">
       <span className="loader"></span>
+ 
     </div>
   );
 
