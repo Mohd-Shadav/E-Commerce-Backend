@@ -12,6 +12,7 @@ const fetchCustomers = async()=>{
   let res = await axios.get('http://localhost:3000/api/users/get-users');
 
   setUser(res.data)
+ 
 }
 
 useEffect(()=>{
