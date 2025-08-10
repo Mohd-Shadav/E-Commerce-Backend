@@ -57,6 +57,8 @@ function App() {
 
 
   useEffect(()=>{
+
+    console.log("hello testing")
     
    
     verification();
