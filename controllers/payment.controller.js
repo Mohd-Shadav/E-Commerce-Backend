@@ -282,7 +282,7 @@ exports.verifyPayment = async (req, res) => {
       savedOrders.push(newOrder);
 
 
-      console.log(items);
+    
 
     const orderDetails = {
       orderId:paymentLink.order_id,
