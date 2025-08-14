@@ -58,7 +58,7 @@ function App() {
 
   useEffect(()=>{
 
-   clg("hello from app")
+
    
     verification();
     
