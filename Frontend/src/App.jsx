@@ -58,6 +58,7 @@ function App() {
 
   useEffect(()=>{
 
+    console.log("Theme changed to: ", theme);
    
     verification();
     
