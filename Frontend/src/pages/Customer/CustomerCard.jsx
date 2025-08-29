@@ -1,5 +1,6 @@
 // UserCard.jsx
 import React, { useEffect } from "react";
+import {Link} from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -24,10 +25,14 @@ const UserCard = ({ user }) => {
 
   useEffect(()=>{
   console.log(latestOrder)
+
+ 
   },[])
 
   return (
-    <Card
+
+    <Link to={`/admin/customers/${user._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Card
       sx={{
         m: 2,
         p: 2,
@@ -59,7 +64,7 @@ const UserCard = ({ user }) => {
 
       </CardContent>
 
-    </Card>
+    </Card></Link>
   );
 };
 

@@ -20,6 +20,7 @@ import Categories from './pages/Category/Categories';
 import Signup from './pages/Auth/Signup';
 import OrderDetailsCard from './pages/Orders/OrderDetailsCard';
 import ReactSkeleton from './components/ReactSkeleton';
+import CustomerDetailedCard from './pages/Customer/CustomerDetailedCard';
 
 
 function App() {
@@ -109,6 +110,8 @@ function App() {
           <Route path="/customers" element={<Customer isDark={theme}/>} />
           <Route path='/profile' element={<AdminProfile isDark={theme}/>} />
           <Route path='/order-details' element={<OrderDetailsCard/>}/>
+
+          <Route path='/admin/customers/:id' element={<CustomerDetailedCard/>}/>
           <Route path="*" element={<Dashboard/>}/>
         </Routes>
        </div>
