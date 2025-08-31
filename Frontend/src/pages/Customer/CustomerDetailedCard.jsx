@@ -71,9 +71,9 @@ function CustomerDetailedCard() {
             <Box sx={{display:"flex",gap:2,mt:2,boxShadow:"0 0 3px #25252558",p:2,borderRadius:"10px"}}>
            <img src={item?.product?.images?.thumbnail} alt="Product image" style={{height:"200px",width:"200px",objectFit:"cover",borderRadius:"10px"}}/>
          <Box>
-           <Typography variant='h6'>Product Name: </Typography>
-          <Typography variant='h6'>Quantity: </Typography>
-          <Typography variant='h6'>Price: </Typography>
+           <Typography variant='h5'>{item?.product?.name}</Typography>
+          <Typography variant='h6'>Quantity: {item?.quantity} </Typography>
+          <Typography variant='h6'>Price:{item?.price}</Typography>
           </Box>
         </Box>
         ))):(
