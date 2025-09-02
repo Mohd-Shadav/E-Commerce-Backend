@@ -128,6 +128,8 @@ exports.addToCart = async (req,res)=>{
  try {
     const { userid, productid } = req.params;
 
+    
+
     // 1. Fetch product
     const product = await ProductSchema.findById(productid);
     if (!product) return res.status(404).json({ error: "Product not found" });

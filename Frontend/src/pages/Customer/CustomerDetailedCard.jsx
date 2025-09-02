@@ -56,16 +56,20 @@ function CustomerDetailedCard() {
 
 
      <Box sx={{border:'1px solid #25252558',p:2,borderRadius:"10px 10px 0 0"}}>
-       <Typography variant='h6'>userid : {user._id} </Typography>
-      <Typography variant='h6'>Email: {user.email}</Typography>
-      <Typography variant='h6'>Phone: {user.mobile}</Typography>
-      <Typography variant='h6'>Address:{`${userAddress?.houseno},${userAddress?.street} ${userAddress?.landmark},${userAddress?.city},${userAddress?.district},${userAddress?.pincode},${userAddress?.state?.toUpperCase()}`}</Typography>
-      <Typography variant='h6'>Country: {userAddress?.country?.toUpperCase()}</Typography>
+       <Typography variant='h6' fontWeight={600}>userid : <Typography variant='span' color='success' fontWeight={400}>{user._id}</Typography> </Typography>
+      <Typography variant='h6' fontWeight={600}>Email:<Typography variant='span' color='#252525d9' fontWeight={400}> {user.email}</Typography> </Typography>
+      <Typography variant='h6' fontWeight={600}>Phone:<Typography variant='span' color='#252525d9' fontWeight={400}> {user.mobile}</Typography> </Typography>
+      <Typography variant='h6' fontWeight={600}>Address:<Typography variant='span' color='#252525d9' fontWeight={400}>{
+  userAddress?.length > 0 
+    ? `${userAddress?.houseno}, ${userAddress?.street}, ${userAddress?.landmark}, ${userAddress?.city}, ${userAddress?.district}, ${userAddress?.pincode}, ${userAddress?.state?.toUpperCase()}`
+    : " No Address Found"
+}</Typography> </Typography>
+      <Typography variant='h6' fontWeight={600}>Country: <Typography variant='span' color='#252525d9' fontWeight={400}>{userAddress?.country?.toUpperCase()||"No Country Found"}</Typography> </Typography>
      </Box>
 
    
       <Box sx={{border:'1px solid #25252558',p:2,borderTop:"none"}}>
-        <Typography variant='h5'>Cart :</Typography>
+        <Typography variant='h5'>Cart :  <Typography variant='span' color='primary' fontSize={'1.2rem'}>{user?.cart?.length} Items</Typography> </Typography>
         {user?.cart?.length>0 ? (
           user.cart.map((item,index)=>(
             <Box sx={{display:"flex",gap:2,mt:2,boxShadow:"0 0 3px #25252558",p:2,borderRadius:"10px"}}>
@@ -73,7 +77,7 @@ function CustomerDetailedCard() {
          <Box>
            <Typography variant='h5'>{item?.product?.name}</Typography>
           <Typography variant='h6'>Quantity: {item?.quantity} </Typography>
-          <Typography variant='h6'>Price:{item?.price}</Typography>
+          <Typography variant='h6'>Price: ₹{item?.product?.discountprice * item?.quantity}</Typography>
           </Box>
         </Box>
         ))):(
@@ -82,14 +86,19 @@ function CustomerDetailedCard() {
         </Box>
 
           <Box sx={{border:'1px solid #25252558',p:2,borderTop:"none",borderRadius:"0 0 10px 10px"}}>
-        <Typography variant='h5'>Orders :</Typography>
+        <Typography variant='h5'>Orders : <Typography variant='span' color='primary' fontSize={'1.2rem'}>{orders?.length} Items</Typography></Typography>
         {orders.length > 0 ? (
           orders.map((item,index)=>(
-            <Box sx={{display:"flex",flexDirection:"column",gap:2,mt:2,boxShadow:"0 0 3px #25252558",p:2,borderRadius:"10px"}}>
-          <Typography variant='h6'>Order id : </Typography>
-          <Typography variant='h6'>Product :  </Typography>
-          <Typography variant='h6'>Price: </Typography>
-           <Typography variant='h6'>Status: </Typography>
+            <Box sx={{display:"flex",flexDirection:"column",gap:0,mt:2,boxShadow:"0 0 3px #25252558",p:2,borderRadius:"10px"}}>
+          <Typography variant='h6'>Order id : <Typography variant='span' color='success' fontWeight={400}>{item?.orderDetails?.orderId}</Typography> </Typography>
+          <Typography variant='h6'>Product id : <Typography variant='span' color='success' fontWeight={400}>{item?.orderDetails?.productID}</Typography>  </Typography>
+           <Typography variant='h6'>Payment id: <Typography variant='span' color='success' fontWeight={400}> {item?.orderDetails?.paymentID}</Typography>  </Typography>
+          <Typography variant='h6'>Price: <Typography variant='span' color='error' fontWeight={400}>₹{item?.orderDetails?.price}</Typography> </Typography>
+          <Typography variant='h6'>Variant: <Typography variant='span' color='error' fontWeight={400}>{item?.orderDetails?.variant}</Typography>  </Typography>
+           <Typography variant='h6'>Status: <Typography variant='span' color='info' fontWeight={400}>{item?.orderDetails?.status}</Typography>  </Typography>
+           
+           
+             <Typography variant='h6'>Created At: <Typography variant='span' color='primary' fontWeight={400}> {new Date(item?.createdAt).toLocaleDateString()},{new Date(item?.createdAt).toLocaleTimeString()}</Typography>  </Typography>
         </Box>
           ))
         ):(
