@@ -59,7 +59,7 @@ function App() {
 
   useEffect(()=>{
 
-   
+   console.log("f")
    
     verification();
     
