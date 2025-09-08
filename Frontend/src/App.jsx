@@ -59,7 +59,6 @@ function App() {
 
   useEffect(()=>{
 
-  console.log("hii")
    
     verification();
     
