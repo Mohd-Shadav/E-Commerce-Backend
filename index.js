@@ -18,7 +18,8 @@ const orderRoutes = require('./Routes/orders.routes');
 // app.use(express.json());
 const allowedOrigin = [
    "http://localhost:5173",
-   "http://localhost:5174"
+   "http://localhost:5174",
+   "https://fullstack-ecommerce-lemon-alpha.vercel.app/"
 ]
 
 app.use(cors({
@@ -33,6 +34,9 @@ app.use(cookieParser());
 
 //After-----------------------------------------------
 // Middleware that skips parsing for /api/payment/verify
+app.get("/",(req,res)=>{
+  res.status(200).send("E-Commerce Website is running")
+})
 app.use((req, res, next) => {
   if (req.originalUrl === '/api/payment/verify') {
     return next(); // skip parsing for Razorpay webhook
