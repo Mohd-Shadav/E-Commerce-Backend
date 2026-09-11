@@ -19,7 +19,7 @@ const orderRoutes = require('./Routes/orders.routes');
 const allowedOrigin = [
    "http://localhost:5173",
    "http://localhost:5174",
-   "https://fullstack-ecommerce-lemon-alpha.vercel.app/"
+   "https://fullstack-ecommerce-lemon-alpha.vercel.app"
 ]
 
 app.use(cors({
